@@ -1,12 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Welcome from './Welcome';
 import reportWebVitals from './reportWebVitals';
+
+class SiteWrapper extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      screen: 0,
+    }
+  }
+  render() {
+    if(this.state.screen == 0) {
+      return (<Welcome />);
+    }
+  }
+
+}
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <SiteWrapper />
   </React.StrictMode>,
   document.getElementById('root')
 );
