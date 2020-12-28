@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import screenNames from './ScreenNames'
+import screenNames from './variables/ScreenNames'
+import exerciseGroups from './variables/ExerciseGroups'
 import reportWebVitals from './reportWebVitals';
 import Welcome from './Welcome';
 import SetTime from './SetTime';
+import SetWorkout from './SetWorkout';
 
 class SiteWrapper extends React.Component{
   constructor(props) {
@@ -12,6 +14,21 @@ class SiteWrapper extends React.Component{
     this.state = {
       screen: screenNames.WELCOME,
       minutes: 45,
+      selectedExerciseGroups: []
+    }
+  }
+  setExerciseGroups(i) {
+    if(this.state.selectedExerciseGroups.includes(i)) {
+      const index = this.state.selectedExerciseGroups.indexOf(i);
+      this.setState({
+        selectedExerciseGroups: this.state.selectedExerciseGroups.slice(0, index).concat(
+          this.state.selectedExerciseGroups.slice(index + 1)),
+      });
+    }
+    else {
+      this.setState({
+        selectedExerciseGroups: this.state.selectedExerciseGroups.concat([i]),
+      });
     }
   }
   changeScreenTo(i) {
@@ -20,6 +37,8 @@ class SiteWrapper extends React.Component{
     this.setState({
       screen: i,
     });
+    console.log(this.state.selectedExerciseGroups);
+
   }
   addMinutes(i) {
     if(this.state.minutes + i > 0 && this.state.minutes + i <= 180)
@@ -35,6 +54,10 @@ class SiteWrapper extends React.Component{
       return (<SetTime minutes={this.state.minutes}
                        onClickNewScreen={(i) => this.changeScreenTo(i)}
                        onClickTimer={(i) => this.addMinutes(i)}/>);
+    }
+    else if(this.state.screen == screenNames.SET_WORKOUT) {
+      return (<SetWorkout onClickNewScreen={(i) => this.changeScreenTo(i)}
+                          onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}/>);
     }
   }
 

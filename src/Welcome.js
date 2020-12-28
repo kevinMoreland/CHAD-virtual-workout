@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
-import screenNames from './ScreenNames'
+import screenNames from './variables/ScreenNames'
 import './CenterWrapper.css';
 
 function Welcome(props) {
