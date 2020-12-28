@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import Welcome from './Welcome';
 import SetTime from './SetTime';
 import SetWorkout from './SetWorkout';
+import Workout from './Workout';
 
 class SiteWrapper extends React.Component{
   constructor(props) {
@@ -31,9 +32,12 @@ class SiteWrapper extends React.Component{
       });
     }
   }
-  changeScreenTo(i) {
+  changeScreenTo(i, warningEnabled) {
     //some sort of transition?
     //http://reactcommunity.org/react-transition-group/transition
+    if(warningEnabled) {
+      alert("Add a warning here to ensure a use is sure about action");
+    }
     this.setState({
       screen: i,
     });
@@ -48,16 +52,19 @@ class SiteWrapper extends React.Component{
   }
   render() {
     if(this.state.screen == screenNames.WELCOME) {
-      return (<Welcome onClick={(i) => this.changeScreenTo(i)}/>);
+      return (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}/>);
     }
     else if(this.state.screen == screenNames.SET_TIME) {
       return (<SetTime minutes={this.state.minutes}
-                       onClickNewScreen={(i) => this.changeScreenTo(i)}
+                       onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                        onClickTimer={(i) => this.addMinutes(i)}/>);
     }
     else if(this.state.screen == screenNames.SET_WORKOUT) {
-      return (<SetWorkout onClickNewScreen={(i) => this.changeScreenTo(i)}
+      return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                           onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}/>);
+    }
+    else if(this.state.screen == screenNames.WORKOUT) {
+      return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}/>);
     }
   }
 

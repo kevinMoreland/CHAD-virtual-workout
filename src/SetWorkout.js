@@ -23,8 +23,16 @@ function SetWorkout(props) {
                 onClick={() => props.onClickSetWorkoutType(exerciseGroups.CARDIO)}>Cardio</Button>
       </div>
       &nbsp;
-      <Button color="primary" variant="contained"
-              onClick={() => props.onClickNewScreen(screenNames.WELCOME)}>Let's go!</Button>
+      <div className="centerRow">
+        <Button color="primary"
+                variant="contained"
+                onClick={() => props.onClickNewScreen(screenNames.SET_TIME, false)}>Back</Button>
+        &nbsp;
+        <Button color="primary"
+                variant="contained"
+                onClick={() => props.onClickNewScreen(screenNames.WORKOUT, false)}>Let's go!</Button>
+      </div>
+
     </div>
   );
 }
