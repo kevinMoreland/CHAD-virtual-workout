@@ -1,17 +1,18 @@
 import { Button } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
+import './CenterWrapper.css';
 
 function SetTime() {
   return (
-    <Grid
-      container
-      direction="column"
-      justify="center"
-      alignItems="center"
-      style={{ minHeight: '100vh' }}>
+    <div className="centerWrapper">
       <h1>Select a workout length.</h1>
-      <Button color="secondary" variant="contained">Begin Workout</Button>
-    </Grid>
+      <h1>00:00</h1>
+      <div className="centerRow">
+        <Button color="primary" variant="contained" padding={6}>-</Button>
+        &nbsp;
+        <Button color="primary" variant="contained" padding={6}>+</Button>
+      </div>
+    </div>
   );
 }
 
