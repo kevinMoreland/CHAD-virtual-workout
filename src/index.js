@@ -11,21 +11,30 @@ class SiteWrapper extends React.Component{
     super(props)
     this.state = {
       screen: screenNames.WELCOME,
+      minutes: 45,
     }
   }
-  handleClick(i) {
+  changeScreenTo(i) {
     //some sort of transition?
     //http://reactcommunity.org/react-transition-group/transition
     this.setState({
       screen: i,
     });
   }
+  addMinutes(i) {
+    if(this.state.minutes + i > 0 && this.state.minutes + i <= 180)
+    this.setState({
+        minutes: this.state.minutes + i,
+    });
+  }
   render() {
     if(this.state.screen == screenNames.WELCOME) {
-      return (<Welcome onClick={(i) => this.handleClick(i)}/>);
+      return (<Welcome onClick={(i) => this.changeScreenTo(i)}/>);
     }
     else if(this.state.screen == screenNames.SET_TIME) {
-      return (<SetTime />);
+      return (<SetTime minutes={this.state.minutes}
+                       onClickNewScreen={(i) => this.changeScreenTo(i)}
+                       onClickTimer={(i) => this.addMinutes(i)}/>);
     }
   }
 

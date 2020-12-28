@@ -1,17 +1,21 @@
 import { Button } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import './CenterWrapper.css';
+import screenNames from './ScreenNames'
 
-function SetTime() {
+function SetTime(props) {
+
   return (
     <div className="centerWrapper">
       <h1>Select a workout length.</h1>
-      <h1>00:00</h1>
+      <h1>0{Math.floor(props.minutes / 60)}:{props.minutes % 60 == 0 ? "0" : ""}{props.minutes % 60}</h1>
       <div className="centerRow">
-        <Button color="primary" variant="contained" padding={6}>-</Button>
+        <Button color="primary" variant="contained" onClick={() => props.onClickTimer(-15)}>-</Button>
         &nbsp;
-        <Button color="primary" variant="contained" padding={6}>+</Button>
+        <Button color="primary" variant="contained" onClick={() => props.onClickTimer(15)}>+</Button>
       </div>
+      &nbsp;
+      <Button color="primary" variant="contained" onClick={() => props.onClickNewScreen(screenNames.WELCOME)}>Let's do it!</Button>
     </div>
   );
 }
