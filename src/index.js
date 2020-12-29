@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { API } from 'aws-amplify';
+
 import './index.css';
 import screenNames from './variables/ScreenNames'
 import exerciseGroups from './variables/ExerciseGroups'
@@ -10,6 +12,10 @@ import SetWorkout from './SetWorkout';
 import Workout from './Workout';
 
 class SiteWrapper extends React.Component{
+  async componentDidMount() {
+    const data = await API.get('chadApi', '/workout')
+    console.log(data);
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -41,7 +47,6 @@ class SiteWrapper extends React.Component{
     this.setState({
       screen: i,
     });
-    console.log(this.state.selectedExerciseGroups);
 
   }
   addMinutes(i) {

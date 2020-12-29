@@ -1,0 +1,35 @@
+{
+    "paths": [
+        {
+            "name": "/workout",
+            "lambdaFunction": "generateChadWorkout",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/workout"
+        }
+    ],
+    "resourceName": "chadApi",
+    "apiName": "chadApi",
+    "functionArns": [
+        {
+            "lambdaFunction": "generateChadWorkout"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-amplifyf9d690c851e34-staging-01531-authRole",
+        "unAuthRoleName": "amplify-amplifyf9d690c851e34-staging-01531-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "generateChadWorkout",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
