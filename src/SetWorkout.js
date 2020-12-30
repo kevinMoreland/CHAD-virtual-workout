@@ -1,5 +1,4 @@
 import { Button } from '@material-ui/core';
-import { Grid } from '@material-ui/core';
 import './CenterWrapper.css';
 import screenNames from './variables/ScreenNames'
 import exerciseGroups from './variables/ExerciseGroups'
@@ -18,9 +17,6 @@ function SetWorkout(props) {
         &nbsp;
         <Button color="primary" variant="contained"
                 onClick={() => props.onClickSetWorkoutType(exerciseGroups.CORE)}>Core</Button>
-        &nbsp;
-        <Button color="primary" variant="contained"
-                onClick={() => props.onClickSetWorkoutType(exerciseGroups.CARDIO)}>Cardio</Button>
       </div>
       &nbsp;
       <div className="centerRow">

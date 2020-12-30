@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { API } from 'aws-amplify';
 
 import './index.css';
 import screenNames from './variables/ScreenNames'
@@ -12,16 +11,14 @@ import SetWorkout from './SetWorkout';
 import Workout from './Workout';
 
 class SiteWrapper extends React.Component{
-  async componentDidMount() {
-    const data = await API.get('chadApi', '/workout')
-    console.log(data);
-  }
+
   constructor(props) {
     super(props)
     this.state = {
       screen: screenNames.WELCOME,
-      minutes: 45,
-      selectedExerciseGroups: []
+      workoutLength: 45,
+      selectedExerciseGroups: [],
+      generatedWorkout: null
     }
   }
   setExerciseGroups(i) {
@@ -49,10 +46,23 @@ class SiteWrapper extends React.Component{
     });
 
   }
-  addMinutes(i) {
-    if(this.state.minutes + i > 0 && this.state.minutes + i <= 180)
+  addMinutesToWorkout(i) {
+    if(this.state.workoutLength + i > 0 && this.state.workoutLength + i <= 180)
     this.setState({
-        minutes: this.state.minutes + i,
+      workoutLength: this.state.workoutLength + i,
+    });
+  }
+
+  async getWorkout() {
+    const params =  '?workoutLength=' + this.state.workoutLength
+                  + '&hasUpper='      + this.state.selectedExerciseGroups.includes(exerciseGroups.UPPER)
+                  + '&hasLower='      + this.state.selectedExerciseGroups.includes(exerciseGroups.LOWER)
+                  + '&hasCore='       + this.state.selectedExerciseGroups.includes(exerciseGroups.CORE);
+    const url = 'https://x9txjb9yi5.execute-api.eu-west-1.amazonaws.com/staging/workout' + params;
+    const response = await fetch(url);
+    const data = await response.json();
+    this.setState({
+      generatedWorkout: data,
     });
   }
   render() {
@@ -60,16 +70,18 @@ class SiteWrapper extends React.Component{
       return (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}/>);
     }
     else if(this.state.screen == screenNames.SET_TIME) {
-      return (<SetTime minutes={this.state.minutes}
+      return (<SetTime workoutLength={this.state.workoutLength}
                        onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
-                       onClickTimer={(i) => this.addMinutes(i)}/>);
+                       onClickTimer={(i) => this.addMinutesToWorkout(i)}/>);
     }
     else if(this.state.screen == screenNames.SET_WORKOUT) {
       return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                           onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}/>);
     }
     else if(this.state.screen == screenNames.WORKOUT) {
-      return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}/>);
+      return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
+                       generatedWorkout={this.state.generatedWorkout}
+                       onClickGenerateWorkout={() => this.getWorkout()}/>);
     }
   }
 
