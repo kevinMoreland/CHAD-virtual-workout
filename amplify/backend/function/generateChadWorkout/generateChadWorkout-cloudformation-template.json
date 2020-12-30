@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-amplifyf9d690c851e34-staging-01531-deployment",
-          "S3Key": "amplify-builds/generateChadWorkout-4a7a74414169436e6241-build.zip"
+          "S3Key": "amplify-builds/generateChadWorkout-70764734646c794e6b56-build.zip"
         }
       }
     },
