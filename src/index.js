@@ -48,7 +48,7 @@ class SiteWrapper extends React.Component{
     //http://reactcommunity.org/react-transition-group/transition
 
     //time to generate workout
-    if(i == screenNames.WORKOUT) {
+    if(i === screenNames.WORKOUT) {
       this.getWorkout();
     }
     if(warningEnabled) {
@@ -80,23 +80,23 @@ class SiteWrapper extends React.Component{
     });
   }
   render() {
-    if(this.state.screen == screenNames.WELCOME) {
+    if(this.state.screen === screenNames.WELCOME) {
       return (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}/>);
     }
-    else if(this.state.screen == screenNames.SET_TIME) {
+    else if(this.state.screen === screenNames.SET_TIME) {
       return (<SetTime workoutLength={this.state.workoutLength}
                        onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                        onClickTimer={(i) => this.addMinutesToWorkout(i)}/>);
     }
-    else if(this.state.screen == screenNames.SET_WORKOUT) {
+    else if(this.state.screen === screenNames.SET_WORKOUT) {
       return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                           onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}/>);
     }
-    else if(this.state.screen == screenNames.SET_REST) {
+    else if(this.state.screen === screenNames.SET_REST) {
       return (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                        onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}/>);
     }
-    else if(this.state.screen == screenNames.WORKOUT) {
+    else if(this.state.screen === screenNames.WORKOUT) {
       return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                        generatedWorkout={this.state.generatedWorkout}/>);
     }
