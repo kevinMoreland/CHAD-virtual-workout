@@ -120,25 +120,16 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
             }
             
             //check if there would need to be overflow. if so, return a break
-            if(exerciseCycleUsed.cycleTimeSec + totalTime > workoutLengthInSec) {
-                var newActivity = new Activity(getRest(workoutLengthInSec - totalTime));
-
-                //previous exercise is exact same. merge these two
-                if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name && 
-                   activities[activities.length - 1].description == newActivity.description) {
-                    var prevActivity = activities.pop();
-                    newActivity.amountTime += prevActivity.amountTime;
-                }
-
-                activities.push(newActivity);
-                return activities;
+            let timeToDoThisExercise = exerciseCycleUsed.cycleTimeSec;
+            if(timeToDoThisExercise + totalTime > workoutLengthInSec) {
+                timeToDoThisExercise -= (workoutLengthInSec - totalTime);
             }
             let exerciseTime = 0;
 
             //if the exercise cycle is for time, we need to divide up time for exercise and time for rest
             if(exerciseCycleUsed.isForTime) {
-                var restLength = exerciseCycleUsed.cycleTimeSec / (1 + workRestRatio);
-                var workLength = exerciseCycleUsed.cycleTimeSec - restLength;
+                var restLength = timeToDoThisExercise / (1 + workRestRatio);
+                var workLength = timeToDoThisExercise - restLength;
                 var description = "Do as many as you can in " + workLength + " seconds!";
                 if(nonRepWorkouts.includes(exerciseCycleUsed.name)) {
                   description = "Keep going for " + workLength + " seconds!";
@@ -163,7 +154,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
             else {
                 var newActivity = new Activity(exerciseCycleUsed.name,
                     "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds!",
-                    exerciseCycleUsed.cycleTimeSec);
+                    timeToDoThisExercise);
 
                 //previous exercise is exact same. merge these two.
                 if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name && 
@@ -213,7 +204,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
         wp.activities = wp.activities.concat(coreActivities);
         wp.activities = wp.activities.concat(upperActivities);
     }
-    return wp;
+    return wp.activities;
 }
 
 exports.handler = async (event) => {

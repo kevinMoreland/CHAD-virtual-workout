@@ -6,15 +6,18 @@ import './CenterWrapper.css';
 
 //keep track of current position "i" in workout and time "s" in seconds into the workout
 function Workout(props) {
-  if(props.generatedWorkout == null) {
+  if(props.activities == []) {
+    return (<div className="centerWrapper"><CircularProgress /></div>);
+  }
+  else if(props.currentIndexInWorkout >= props.activities.length) {
     return (<div className="centerWrapper"><CircularProgress /></div>);
   }
   else{
-    let activities = props.generatedWorkout.activities;
-    let currentExerciseName = activities[props.currentIndexInWorkout].name;
-    let nextExerciseName = props.currentIndexInWorkout != activities.length - 1 ? activities[props.currentIndexInWorkout + 1].name : null;
-    let currentExerciseDescription = props.generatedWorkout.activities[props.currentIndexInWorkout].description;
-    let timeRemaining = activities[props.currentIndexInWorkout].amountTime - props.timeInSecIntoCurrExercise;
+    let activities = props.activities;
+    let currentExerciseName = activities[props.currentIndexInWorkout][0];
+    let nextExerciseName = props.currentIndexInWorkout + 1 < activities.length ? activities[props.currentIndexInWorkout + 1][0] : null;
+    let currentExerciseDescription = activities[props.currentIndexInWorkout][1];
+    let timeRemaining = activities[props.currentIndexInWorkout][2] - props.timeInSecIntoCurrExercise;
     return (
       <div className="centerWrapper">
         <div>
@@ -31,6 +34,11 @@ function Workout(props) {
                   onClick={props.workoutPaused == true ? () => props.onClickResume() : () => props.onClickPause()}>
                     {props.workoutPaused == true ? "Start!" : "Pause."}
           </Button>
+          <Button color="primary"
+                            variant="contained"
+                            onClick={() => props.onClickResume()}>
+                              Test
+                    </Button>
           <Button color="primary"
                   variant="contained"
                   onClick={() => props.onClickNewScreen(screenNames.WELCOME, true)}>Exit</Button>

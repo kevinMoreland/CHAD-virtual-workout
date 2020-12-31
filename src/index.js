@@ -20,7 +20,7 @@ class SiteWrapper extends React.Component{
       workoutLength: 45,
       selectedExerciseGroups: [],
       workRestRatio: 3,
-      generatedWorkout: null,
+      activities: [],
       workoutPaused: true,
       currentIndexInWorkout: 0,
       timeInSecIntoCurrExercise: 0
@@ -40,15 +40,19 @@ class SiteWrapper extends React.Component{
 
     this.interval = setInterval(() => {
       this.setState({timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1});
-      if(this.state.timeInSecIntoCurrExercise === this.state.generatedWorkout.activities[this.state.currentIndexInWorkout].amountTime) {
+      if(this.state.currentIndexInWorkout < this.state.activities.length &&
+         this.state.timeInSecIntoCurrExercise === this.state.activities[this.state.currentIndexInWorkout][2]) {
+        console.log("exercise: " + this.state.activities[this.state.currentIndexInWorkout]);
+        console.log("exercise time: " + this.state.activities[this.state.currentIndexInWorkout][2]);
+        console.log("current index: " +  this.state.currentIndexInWorkout + " out of " + this.state.activities.length);
         this.setState({
           timeInSecIntoCurrExercise: 0,
           currentIndexInWorkout: this.state.currentIndexInWorkout + 1
         });
       }
-    }, 100);
+    }, 10);
 
-    setTimeout(() => { clearInterval(this.interval); alert("workout Finished! transition to finish screen, which has button to go to entry screen, and clears all data"); }, this.state.workoutLength * 60 * 1000);
+    setTimeout(() => { alert("workout Finished! transition to finish screen, which has button to go to entry screen, and clears all data"); }, this.state.workoutLength * 60 * 1000);
   }
   setExerciseGroups(i) {
     if(this.state.selectedExerciseGroups.includes(i)) {
@@ -102,8 +106,11 @@ class SiteWrapper extends React.Component{
     const url = 'https://x9txjb9yi5.execute-api.eu-west-1.amazonaws.com/staging/workout' + params;
     const response = await fetch(url);
     const data = await response.json();
+    var activitiesArray = data.map(activity => [activity.name, activity.description, activity.amountTime]);
+    alert(activitiesArray);
+    console.log(activitiesArray);
     this.setState({
-      generatedWorkout: data,
+      activities: activitiesArray
     });
   }
   render() {
@@ -125,7 +132,7 @@ class SiteWrapper extends React.Component{
     }
     else if(this.state.screen === screenNames.WORKOUT) {
       return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
-                       generatedWorkout={this.state.generatedWorkout}
+                       activities={this.state.activities}
                        currentIndexInWorkout={this.state.currentIndexInWorkout}
                        timeInSecIntoCurrExercise={this.state.timeInSecIntoCurrExercise}
                        workoutPaused={this.state.workoutPaused}
