@@ -85,15 +85,22 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
                            new ExerciseCycle(exerNames.PLANK,             exerciseLengths.MEDIUM, null, null),
                            new ExerciseCycle(exerNames.MOUNTAIN_CLIMBERS, exerciseLengths.MEDIUM, null, null)];
     class Activity {
-        constructor(name, description, amountTime) {
+        constructor(name, description, amountTime, numReps, numSecToDoReps) {
             this.name = name;
             this.description = description;
             this.amountTime = amountTime;
+            this.numReps = numReps;
+            this.numSecToDoReps = numSecToDoReps;
+            this.isForTime = (numReps == null || numSecToDoReps == null);
+        }
+        equals(otherActivity) {
+          return otherActivity.name === this.name &&
+            ((this.numReps == null || this.numSecToDoReps == null) === (otherActivity.numReps == null || otherActivity.numSecToDoReps == null));
         }
     }
 
     function getRest(length) {
-        return new Activity("Rest", "Take a rest!", length);
+        return new Activity("Rest", "Take a rest!", length, null, null);
     }
 
     function getRandomExerciseCycle(workoutGroup) {
@@ -110,24 +117,53 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
       return exerciseCycleUsed;
     }
 
+    function secondsIntToString(amountTime) {
+      var timeAsString = "";
+      var minutes = Math.floor(amountTime/60);
+      if(minutes > 0) {
+        timeAsString += minutes;
+        if(minutes == 1) {
+          timeAsString += " minute"
+        }
+        else {
+          timeAsString += " minutes"
+        }
+      }
+      var seconds = amountTime - (minutes * 60);
+      if(seconds > 0) {
+        timeAsString += " " + seconds + " seconds";
+      }
+      return timeAsString;
+    }
+    function getDescription(exerciseCycleUsed, workLength){
+      var description = "";
+      if(exerciseCycleUsed.isForTime) {
+        description = "Do as many as you can in " +  secondsIntToString(workLength) + "!";
+        if(nonRepWorkouts.includes(exerciseCycleUsed.name)) {
+          description = "Keep going for " + secondsIntToString(workLength) + "!";
+        }
+      }
+      else {
+        description = "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds for " +  secondsIntToString(workLength) + "!";
+
+      }
+      return description;
+    }
     function addActivity(activities, exerciseCycleUsed) {
       let timeToDoThisExercise = exerciseCycleUsed.cycleTimeSec;
-
       //if the exercise cycle is for time, we need to divide up time for exercise and time for rest
       if(exerciseCycleUsed.isForTime) {
           var restLength = timeToDoThisExercise / (1 + workRestRatio);
           var workLength = timeToDoThisExercise - restLength;
-          var description = "Do as many as you can in " + workLength + " seconds!";
-          if(nonRepWorkouts.includes(exerciseCycleUsed.name)) {
-            description = "Keep going for " + workLength + " seconds!";
-          }
-          var newActivity = new Activity(exerciseCycleUsed.name, description, workLength);
+          var description = getDescription(exerciseCycleUsed, workLength);
+          var newActivity = new Activity(exerciseCycleUsed.name, description, workLength, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
 
           //previous exercise is exact same. merge these two.
-          if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name &&
-             activities[activities.length - 1].description == newActivity.description) {
+          if(activities.length >= 1 && activities[activities.length - 1].equals(newActivity)) {
               var prevActivity = activities.pop();
               newActivity.amountTime += prevActivity.amountTime;
+              description = getDescription(exerciseCycleUsed.isForTime, newActivity.amountTime);
+              newActivity.description = description;
           }
           activities.push(newActivity);
 
@@ -137,19 +173,20 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
       }
       //otherwise, the rest is built in to the workout
       else {
-          var newActivity = new Activity(exerciseCycleUsed.name,
-              "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds!",
-              timeToDoThisExercise);
+          var description = getDescription(exerciseCycleUsed, timeToDoThisExercise);
+          var newActivity = new Activity(exerciseCycleUsed.name, description, timeToDoThisExercise, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
 
           //previous exercise is exact same. merge these two.
-          if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name &&
-              activities[activities.length - 1].description == newActivity.description) {
+          if(activities.length >= 1 && activities[activities.length - 1].equals(newActivity)) {
                var prevActivity = activities.pop();
                newActivity.amountTime += prevActivity.amountTime;
+               description = getDescription(exerciseCycleUsed.isForTime, newActivity.amountTime);
+               newActivity.description = description;
            }
           activities.push(newActivity);
       }
     }
+
     function generateActivities(workoutGroup, workoutLength, workRestRatio) {
         var activities = [];
         var totalTime = 0;
@@ -186,7 +223,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //---------MAIN CODE OF GENERATE WORKOUT-------------
     var activities = [];
     if(!hasLower && !hasUpper && !hasCore) {
-        var exercise = new Activity("Meditate", "You didn't specify anything you want to exercise!", workoutLength); 
+        var exercise = new Activity("Meditate", "You didn't specify anything you want to exercise!", workoutLength, null, null);
         activities.push(exercise);
         return activities;
     }

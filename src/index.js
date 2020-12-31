@@ -106,7 +106,7 @@ class SiteWrapper extends React.Component{
     const url = 'https://x9txjb9yi5.execute-api.eu-west-1.amazonaws.com/staging/workout' + params;
     const response = await fetch(url);
     const data = await response.json();
-    var activitiesArray = data.map(activity => [activity.name, activity.description, activity.amountTime]);
+    var activitiesArray = data.map(activity => [activity.name, activity.description, activity.amountTime, activity.numReps, activity.numSecToDoReps, activity.isForTime]);
     alert(activitiesArray);
     console.log(activitiesArray);
     this.setState({
