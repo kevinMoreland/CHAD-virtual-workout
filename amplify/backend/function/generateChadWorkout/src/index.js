@@ -1,6 +1,6 @@
 function getRatioEachExerciseGroup(hasUpper, hasLower, hasCore) {
     //ratio must add up to 3 at end
-    let outputRatio = {upper: 0.0, lower: 0.0, core: 0};
+    let outputRatio = {upper: 0, lower: 0, core: 0};
     if(hasUpper && hasLower && hasCore) {
         outputRatio.upper = 1;
         outputRatio.lower = 1;
@@ -54,38 +54,36 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
 
     const workoutGroups = {UPPER: 'upper', LOWER: 'lower', CORE: 'core'};
 
+    //it is important that all lengths divide by 4 and 5 evenly so that even work:rest portions can be divided
+    //based on the ratios of work:rest we specified (1:1, 3:1, 5:1).
+    //Also, the potential excess of combining any of these before hitting 300 must follow these requirments
+    //(Ex of excess: we want to add an exercise of length 120 to a list of exercises that add up to 240, and
+    //our target length is 300. we can only do 60 of that exercise. This is okay, 60 divides as per the ratio)
+    const exerciseLengths = {SHORT: 60, MEDIUM: 120, LONG: 300};
     const exerNames = {PUSHUPS: 'Pushups', DIPS: 'Dips', ARM_HAULERS: 'Arm haulers',
                           LUNGES: 'Lunges', SQUATS: 'Squats', WALL_SIT: 'Wall sit',
                           SITUPS: 'Situps', LEG_LIFTS: 'Leg Lifts', PLANK: 'Plank', MOUNTAIN_CLIMBERS: 'Mountain climbers',
                           JUMPING_JACKS: 'Jumping jacks', BEAR_CRAWLS: 'Bear crawls', CRAB_WALKS: 'Crab walks'};
+
     //important for description of workouts. (ex, don't want to say "do as many as you can" for wall sits, doesn't make sense)
     const nonRepWorkouts = [exerNames.ARM_HAULERS, exerNames.WALL_SIT, exerNames.PLANK, exerNames.BEAR_CRAWLS, exerNames.CRAB_WALKS];
-    const upperWorkouts = [new ExerciseCycle(exerNames.PUSHUPS, 30, null, null),
-                           new ExerciseCycle(exerNames.PUSHUPS, 180, 10, 30),
-                           new ExerciseCycle(exerNames.DIPS, 30, null, null),
-                           new ExerciseCycle(exerNames.DIPS, 180, 15, 30, false),
-                           new ExerciseCycle(exerNames.ARM_HAULERS, 30, null, null),
-                           new ExerciseCycle(exerNames.BEAR_CRAWLS, 60, null, null),
-                           new ExerciseCycle(exerNames.CRAB_WALKS, 60, null, null)];
+    const upperWorkouts = [new ExerciseCycle(exerNames.PUSHUPS,     exerciseLengths.SHORT,  null, null),
+                           new ExerciseCycle(exerNames.PUSHUPS,     exerciseLengths.LONG,   10,   30),
+                           new ExerciseCycle(exerNames.DIPS,        exerciseLengths.SHORT,  null, null),
+                           new ExerciseCycle(exerNames.DIPS,        exerciseLengths.LONG,   15,   30),
+                           new ExerciseCycle(exerNames.ARM_HAULERS, exerciseLengths.SHORT,  null, null),
+                           new ExerciseCycle(exerNames.BEAR_CRAWLS, exerciseLengths.MEDIUM, null, null),
+                           new ExerciseCycle(exerNames.CRAB_WALKS,  exerciseLengths.MEDIUM, null, null)];
 
-    const lowerWorkouts = [new ExerciseCycle(exerNames.LUNGES, 180, null, null),
-                           new ExerciseCycle(exerNames.SQUATS, 180, null, null),
-                           new ExerciseCycle(exerNames.WALL_SIT, 180, null, null),
-                           new ExerciseCycle(exerNames.JUMPING_JACKS, 180, null, null)];
+    const lowerWorkouts = [new ExerciseCycle(exerNames.LUNGES,        exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNames.SQUATS,        exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNames.WALL_SIT,      exerciseLengths.MEDIUM, null, null),
+                           new ExerciseCycle(exerNames.JUMPING_JACKS, exerciseLengths.MEDIUM, null, null)];
 
-    const coreWorkouts =  [new ExerciseCycle(exerNames.SITUPS, 180, null, null),
-                           new ExerciseCycle(exerNames.SITUPS, 180, 10, 30),
-                           new ExerciseCycle(exerNames.LEG_LIFTS, 180, null, null),
-                           new ExerciseCycle(exerNames.LEG_LIFTS, 180, 10, 30),
-                           new ExerciseCycle(exerNames.PLANK, 60, null, null),
-                           new ExerciseCycle(exerNames.MOUNTAIN_CLIMBERS, 60, null, null)];
-
-    class WorkoutPlan {
-        constructor(workoutLength) {
-            this.workoutLength = workoutLength;
-            this.activities = [];
-        }
-    }
+    const coreWorkouts =  [new ExerciseCycle(exerNames.SITUPS,            exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNames.LEG_LIFTS,         exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNames.PLANK,             exerciseLengths.MEDIUM, null, null),
+                           new ExerciseCycle(exerNames.MOUNTAIN_CLIMBERS, exerciseLengths.MEDIUM, null, null)];
     class Activity {
         constructor(name, description, amountTime) {
             this.name = name;
@@ -93,89 +91,104 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
             this.amountTime = amountTime;
         }
     }
+
     function getRest(length) {
         return new Activity("Rest", "Take a rest!", length);
     }
 
+    function getRandomExerciseCycle(workoutGroup) {
+      var exerciseCycleUsed = null;
+      if(workoutGroup == workoutGroups.UPPER) {
+        exerciseCycleUsed = upperWorkouts[Math.floor(Math.random() * upperWorkouts.length)];
+      }
+      else if(workoutGroup == workoutGroups.LOWER) {
+        exerciseCycleUsed = lowerWorkouts[Math.floor(Math.random() * lowerWorkouts.length)];
+      }
+      else if(workoutGroup == workoutGroups.CORE) {
+        exerciseCycleUsed = coreWorkouts[Math.floor(Math.random() * coreWorkouts.length)];
+      }
+      return exerciseCycleUsed;
+    }
+
+    function addActivity(activities, exerciseCycleUsed) {
+      let timeToDoThisExercise = exerciseCycleUsed.cycleTimeSec;
+
+      //if the exercise cycle is for time, we need to divide up time for exercise and time for rest
+      if(exerciseCycleUsed.isForTime) {
+          var restLength = timeToDoThisExercise / (1 + workRestRatio);
+          var workLength = timeToDoThisExercise - restLength;
+          var description = "Do as many as you can in " + workLength + " seconds!";
+          if(nonRepWorkouts.includes(exerciseCycleUsed.name)) {
+            description = "Keep going for " + workLength + " seconds!";
+          }
+          var newActivity = new Activity(exerciseCycleUsed.name, description, workLength);
+
+          //previous exercise is exact same. merge these two.
+          if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name &&
+             activities[activities.length - 1].description == newActivity.description) {
+              var prevActivity = activities.pop();
+              newActivity.amountTime += prevActivity.amountTime;
+          }
+          activities.push(newActivity);
+
+          if(restLength > 0) {
+              activities.push(getRest(restLength));
+          }
+      }
+      //otherwise, the rest is built in to the workout
+      else {
+          var newActivity = new Activity(exerciseCycleUsed.name,
+              "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds!",
+              timeToDoThisExercise);
+
+          //previous exercise is exact same. merge these two.
+          if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name &&
+              activities[activities.length - 1].description == newActivity.description) {
+               var prevActivity = activities.pop();
+               newActivity.amountTime += prevActivity.amountTime;
+           }
+          activities.push(newActivity);
+      }
+    }
     function generateActivities(workoutGroup, workoutLength, workRestRatio) {
         var activities = [];
         var totalTime = 0;
         const workoutLengthInSec = workoutLength * 60;
 
         while(totalTime < workoutLengthInSec) {
-            var exerciseCycleUsed = null;
-            if(workoutGroup == workoutGroups.UPPER) {
-                exerciseCycleUsed = upperWorkouts[Math.floor(Math.random() * upperWorkouts.length)];
-            }
-            else if(workoutGroup == workoutGroups.LOWER) {
-                exerciseCycleUsed = lowerWorkouts[Math.floor(Math.random() * lowerWorkouts.length)];
-            }
-            else if(workoutGroup == workoutGroups.CORE) {
-                exerciseCycleUsed = coreWorkouts[Math.floor(Math.random() * coreWorkouts.length)];
-            }
-            //In the edge case that the workout we specified is null, we just rest the entire time
-            else {
-                activities.push(new Activity(getRest(workoutLength)));
-                return activities;
-            }
+            var exerciseCycleUsed = getRandomExerciseCycle(workoutGroup);
             
-            //check if there would need to be overflow. if so, return a break
-            let timeToDoThisExercise = exerciseCycleUsed.cycleTimeSec;
-            if(timeToDoThisExercise + totalTime > workoutLengthInSec) {
-                timeToDoThisExercise -= (workoutLengthInSec - totalTime);
-            }
-            let exerciseTime = 0;
+            //check if there would overflow the allocated time. If so, adjust workout length
+            if(exerciseCycleUsed.cycleTimeSec + totalTime > workoutLengthInSec) {
+              let timeToDoThisExercise = workoutLengthInSec - totalTime;
+              let numReps = exerciseCycleUsed.numReps;
+              let numSecToDoReps = exerciseCycleUsed.numSecToDoReps;
 
-            //if the exercise cycle is for time, we need to divide up time for exercise and time for rest
-            if(exerciseCycleUsed.isForTime) {
-                var restLength = timeToDoThisExercise / (1 + workRestRatio);
-                var workLength = timeToDoThisExercise - restLength;
-                var description = "Do as many as you can in " + workLength + " seconds!";
-                if(nonRepWorkouts.includes(exerciseCycleUsed.name)) {
-                  description = "Keep going for " + workLength + " seconds!";
-                }
-                var newActivity = new Activity(exerciseCycleUsed.name, description, workLength);
-
-                //previous exercise is exact same. merge these two.
-                if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name && 
-                   activities[activities.length - 1].description == newActivity.description) {
-                    var prevActivity = activities.pop();
-                    newActivity.amountTime += prevActivity.amountTime;
-                }
-                exerciseTime += newActivity.amountTime;
-                activities.push(newActivity);
-
-                if(restLength > 0) {
-                    activities.push(getRest(restLength));
-                    exerciseTime += restLength;
-                }
-            }
-            //otherwise, the rest is built in to the workout
-            else {
-                var newActivity = new Activity(exerciseCycleUsed.name,
-                    "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds!",
-                    timeToDoThisExercise);
-
-                //previous exercise is exact same. merge these two.
-                if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name && 
-                    activities[activities.length - 1].description == newActivity.description) {
-                     var prevActivity = activities.pop();
-                     newActivity.amountTime += prevActivity.amountTime;
-                 }
-                exerciseTime += newActivity.amountTime;
-                activities.push(newActivity);
+              //if less than 2 minutes, exercise has to be for time
+              if(timeToDoThisExercise < 120) {
+                numReps = null;
+                numSecToDoReps = null;
+              }
+              const cycleWithReducedTime = new ExerciseCycle(exerciseCycleUsed.name,
+                                                             timeToDoThisExercise,
+                                                             numReps,
+                                                             numSecToDoReps);
+              exerciseCycleUsed = cycleWithReducedTime;
             }
 
-            totalTime += exerciseTime;
+            addActivity(activities, exerciseCycleUsed);
+            totalTime += exerciseCycleUsed.cycleTimeSec;
         }
         return activities;
     }
 
-    var wp = new WorkoutPlan(workoutLength);
+
+    //---------MAIN CODE OF GENERATE WORKOUT-------------
+    var activities = [];
     if(!hasLower && !hasUpper && !hasCore) {
         var exercise = new Activity("Meditate", "You didn't specify anything you want to exercise!", workoutLength); 
-        wp.activities.push(exercise);
-        return wp;
+        activities.push(exercise);
+        return activities;
     }
 
     let ratioOfEachExerciseGroupNeeded = getRatioEachExerciseGroup(hasUpper, hasLower, hasCore);
@@ -190,21 +203,21 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //randomize order of exercise groups
     let randomNum = Math.random();
     if(randomNum < 0.3) {
-        wp.activities = wp.activities.concat(upperActivities);
-        wp.activities = wp.activities.concat(lowerActivities);
-        wp.activities = wp.activities.concat(coreActivities);
+        activities = activities.concat(upperActivities);
+        activities = activities.concat(lowerActivities);
+        activities = activities.concat(coreActivities);
     }
     else if(randomNum < 0.6) {
-        wp.activities = wp.activities.concat(coreActivities);
-        wp.activities = wp.activities.concat(upperActivities);
-        wp.activities = wp.activities.concat(lowerActivities);
+        activities = activities.concat(coreActivities);
+        activities = activities.concat(upperActivities);
+        activities = activities.concat(lowerActivities);
     }
     else {
-        wp.activities = wp.activities.concat(lowerActivities);
-        wp.activities = wp.activities.concat(coreActivities);
-        wp.activities = wp.activities.concat(upperActivities);
+        activities = activities.concat(lowerActivities);
+        activities = activities.concat(coreActivities);
+        activities = activities.concat(upperActivities);
     }
-    return wp.activities;
+    return activities;
 }
 
 exports.handler = async (event) => {
