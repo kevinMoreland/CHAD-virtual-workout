@@ -26,7 +26,7 @@ function SetWorkout(props) {
         &nbsp;
         <Button color="primary"
                 variant="contained"
-                onClick={() => props.onClickNewScreen(screenNames.WORKOUT, false)}>Let's go!</Button>
+                onClick={() => props.onClickNewScreen(screenNames.SET_REST, false)}>Let's go!</Button>
       </div>
 
     </div>

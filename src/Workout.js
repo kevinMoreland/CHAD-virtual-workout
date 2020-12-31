@@ -16,7 +16,7 @@ function Workout(props) {
                 onClick={() => alert(props.generatedWorkout)}>View Workout</Button>
         <Button color="primary"
                 variant="contained"
-                onClick={() => props.onClickNewScreen(screenNames.SET_WORKOUT, true)}>Back</Button>
+                onClick={() => props.onClickNewScreen(screenNames.SET_REST, true)}>Back</Button>
     </div>
   );
 }

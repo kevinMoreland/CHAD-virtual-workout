@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import Welcome from './Welcome';
 import SetTime from './SetTime';
 import SetWorkout from './SetWorkout';
+import SetRest from './SetRest';
 import Workout from './Workout';
 
 class SiteWrapper extends React.Component{
@@ -18,6 +19,7 @@ class SiteWrapper extends React.Component{
       screen: screenNames.WELCOME,
       workoutLength: 45,
       selectedExerciseGroups: [],
+      workRestRatio: 3,
       generatedWorkout: null
     }
   }
@@ -34,6 +36,11 @@ class SiteWrapper extends React.Component{
         selectedExerciseGroups: this.state.selectedExerciseGroups.concat([i]),
       });
     }
+  }
+  setWorkRestRatio(i) {
+    this.setState({
+      workRestRatio: i,
+    });
   }
   changeScreenTo(i, warningEnabled) {
     //some sort of transition?
@@ -57,7 +64,8 @@ class SiteWrapper extends React.Component{
     const params =  '?workoutLength=' + this.state.workoutLength
                   + '&hasUpper='      + this.state.selectedExerciseGroups.includes(exerciseGroups.UPPER)
                   + '&hasLower='      + this.state.selectedExerciseGroups.includes(exerciseGroups.LOWER)
-                  + '&hasCore='       + this.state.selectedExerciseGroups.includes(exerciseGroups.CORE);
+                  + '&hasCore='       + this.state.selectedExerciseGroups.includes(exerciseGroups.CORE)
+                  + '&workRestRatio=' + this.state.workRestRatio;
     const url = 'https://x9txjb9yi5.execute-api.eu-west-1.amazonaws.com/staging/workout' + params;
     const response = await fetch(url);
     const data = await response.json();
@@ -77,6 +85,10 @@ class SiteWrapper extends React.Component{
     else if(this.state.screen == screenNames.SET_WORKOUT) {
       return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
                           onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}/>);
+    }
+    else if(this.state.screen == screenNames.SET_REST) {
+      return (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
+                       onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}/>);
     }
     else if(this.state.screen == screenNames.WORKOUT) {
       return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
