@@ -20,8 +20,35 @@ class SiteWrapper extends React.Component{
       workoutLength: 45,
       selectedExerciseGroups: [],
       workRestRatio: 3,
-      generatedWorkout: null
+      generatedWorkout: null,
+      workoutPaused: true,
+      currentIndexInWorkout: 0,
+      timeInSecIntoCurrExercise: 0
     }
+  }
+
+  pauseWorkout() {
+    this.setState({
+      workoutPaused: true
+    });
+    clearInterval(this.interval);
+  }
+  resumeWorkout() {
+    this.setState({
+      workoutPaused: false
+    });
+
+    this.interval = setInterval(() => {
+      this.setState({timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1});
+      if(this.state.timeInSecIntoCurrExercise === this.state.generatedWorkout.activities[this.state.currentIndexInWorkout].amountTime) {
+        this.setState({
+          timeInSecIntoCurrExercise: 0,
+          currentIndexInWorkout: this.state.currentIndexInWorkout + 1
+        });
+      }
+    }, 100);
+
+    setTimeout(() => { clearInterval(this.interval); alert("workout Finished! transition to finish screen, which has button to go to entry screen, and clears all data"); }, this.state.workoutLength * 60 * 1000);
   }
   setExerciseGroups(i) {
     if(this.state.selectedExerciseGroups.includes(i)) {
@@ -98,7 +125,12 @@ class SiteWrapper extends React.Component{
     }
     else if(this.state.screen === screenNames.WORKOUT) {
       return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
-                       generatedWorkout={this.state.generatedWorkout}/>);
+                       generatedWorkout={this.state.generatedWorkout}
+                       currentIndexInWorkout={this.state.currentIndexInWorkout}
+                       timeInSecIntoCurrExercise={this.state.timeInSecIntoCurrExercise}
+                       workoutPaused={this.state.workoutPaused}
+                       onClickPause={()=>this.pauseWorkout()}
+                       onClickResume={()=>this.resumeWorkout()}/>);
     }
   }
 

@@ -94,7 +94,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
         }
     }
     function getRest(length) {
-        return new Activity("Rest", "Take a short rest!", length);
+        return new Activity("Rest", "Take a rest!", length);
     }
 
     function generateActivities(workoutGroup, workoutLength, workRestRatio) {
@@ -118,6 +118,22 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
                 activities.push(new Activity(getRest(workoutLength)));
                 return activities;
             }
+            
+            //check if there would need to be overflow. if so, return a break
+            if(exerciseCycleUsed.cycleTimeSec + totalTime > workoutLengthInSec) {
+                var newActivity = new Activity(getRest(workoutLengthInSec - totalTime));
+
+                //previous exercise is exact same. merge these two
+                if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name && 
+                   activities[activities.length - 1].description == newActivity.description) {
+                    var prevActivity = activities.pop();
+                    newActivity.amountTime += prevActivity.amountTime;
+                }
+
+                activities.push(newActivity);
+                return activities;
+            }
+            let exerciseTime = 0;
 
             //if the exercise cycle is for time, we need to divide up time for exercise and time for rest
             if(exerciseCycleUsed.isForTime) {
@@ -127,27 +143,46 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
                 if(nonRepWorkouts.includes(exerciseCycleUsed.name)) {
                   description = "Keep going for " + workLength + " seconds!";
                 }
-                activities.push(new Activity(exerciseCycleUsed.name, description, workLength));
+                var newActivity = new Activity(exerciseCycleUsed.name, description, workLength);
+
+                //previous exercise is exact same. merge these two.
+                if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name && 
+                   activities[activities.length - 1].description == newActivity.description) {
+                    var prevActivity = activities.pop();
+                    newActivity.amountTime += prevActivity.amountTime;
+                }
+                exerciseTime += newActivity.amountTime;
+                activities.push(newActivity);
 
                 if(restLength > 0) {
                     activities.push(getRest(restLength));
+                    exerciseTime += restLength;
                 }
             }
             //otherwise, the rest is built in to the workout
             else {
-                activities.push(new Activity(exerciseCycleUsed.name,
-                                             "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds!",
-                                             exerciseCycleUsed.cycleTimeSec));
+                var newActivity = new Activity(exerciseCycleUsed.name,
+                    "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds!",
+                    exerciseCycleUsed.cycleTimeSec);
+
+                //previous exercise is exact same. merge these two.
+                if(activities.length >= 1 && activities[activities.length - 1].name == newActivity.name && 
+                    activities[activities.length - 1].description == newActivity.description) {
+                     var prevActivity = activities.pop();
+                     newActivity.amountTime += prevActivity.amountTime;
+                 }
+                exerciseTime += newActivity.amountTime;
+                activities.push(newActivity);
             }
 
-            totalTime += exerciseCycleUsed.cycleTimeSec;
+            totalTime += exerciseTime;
         }
         return activities;
     }
 
     var wp = new WorkoutPlan(workoutLength);
     if(!hasLower && !hasUpper && !hasCore) {
-        var exercise = new Activity("Meditate", "Zen out! You didn't specify anything you want to exercise!", workoutLength); 
+        var exercise = new Activity("Meditate", "You didn't specify anything you want to exercise!", workoutLength); 
         wp.activities.push(exercise);
         return wp;
     }
