@@ -60,11 +60,11 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
                           JUMPING_JACKS: 'Jumping jacks', BEAR_CRAWLS: 'Bear crawls', CRAB_WALKS: 'Crab walks'};
     //important for description of workouts. (ex, don't want to say "do as many as you can" for wall sits, doesn't make sense)
     const nonRepWorkouts = [exerNames.ARM_HAULERS, exerNames.WALL_SIT, exerNames.PLANK, exerNames.BEAR_CRAWLS, exerNames.CRAB_WALKS];
-    const upperWorkouts = [new ExerciseCycle(exerNames.PUSHUPS, 60, null, null),
+    const upperWorkouts = [new ExerciseCycle(exerNames.PUSHUPS, 30, null, null),
                            new ExerciseCycle(exerNames.PUSHUPS, 180, 10, 30),
-                           new ExerciseCycle(exerNames.DIPS, 60, null, null),
-                           new ExerciseCycle(exerNames.DIPS, 180, 10, 30, false),
-                           new ExerciseCycle(exerNames.ARM_HAULERS, 60, null, null),
+                           new ExerciseCycle(exerNames.DIPS, 30, null, null),
+                           new ExerciseCycle(exerNames.DIPS, 180, 15, 30, false),
+                           new ExerciseCycle(exerNames.ARM_HAULERS, 30, null, null),
                            new ExerciseCycle(exerNames.BEAR_CRAWLS, 60, null, null),
                            new ExerciseCycle(exerNames.CRAB_WALKS, 60, null, null)];
 
@@ -74,7 +74,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
                            new ExerciseCycle(exerNames.JUMPING_JACKS, 180, null, null)];
 
     const coreWorkouts =  [new ExerciseCycle(exerNames.SITUPS, 180, null, null),
-                           new ExerciseCycle(exerNames.SITUPS, 180, 15, 30),
+                           new ExerciseCycle(exerNames.SITUPS, 180, 10, 30),
                            new ExerciseCycle(exerNames.LEG_LIFTS, 180, null, null),
                            new ExerciseCycle(exerNames.LEG_LIFTS, 180, 10, 30),
                            new ExerciseCycle(exerNames.PLANK, 60, null, null),
