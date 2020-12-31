@@ -42,16 +42,22 @@ class SiteWrapper extends React.Component{
       workRestRatio: i,
     });
   }
+
   changeScreenTo(i, warningEnabled) {
     //some sort of transition?
     //http://reactcommunity.org/react-transition-group/transition
+
+    //time to generate workout
+    if(i == screenNames.WORKOUT) {
+      this.getWorkout();
+    }
     if(warningEnabled) {
       alert("Add a warning here to ensure a use is sure about action");
     }
+
     this.setState({
       screen: i,
     });
-
   }
   addMinutesToWorkout(i) {
     if(this.state.workoutLength + i > 0 && this.state.workoutLength + i <= 180)
@@ -92,8 +98,7 @@ class SiteWrapper extends React.Component{
     }
     else if(this.state.screen == screenNames.WORKOUT) {
       return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
-                       generatedWorkout={this.state.generatedWorkout}
-                       onClickGenerateWorkout={() => this.getWorkout()}/>);
+                       generatedWorkout={this.state.generatedWorkout}/>);
     }
   }
 
