@@ -60,6 +60,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //(Ex of excess: we want to add an exercise of length 120 to a list of exercises that add up to 240, and
     //our target length is 300. we can only do 60 of that exercise. This is okay, 60 divides as per the ratio)
     const exerciseLengths = {SHORT: 60, MEDIUM: 120, LONG: 300};
+    const restUpperLimit = 45;
     const exerNames = {PUSHUPS: 'Pushups', DIPS: 'Dips', ARM_HAULERS: 'Arm haulers',
                           LUNGES: 'Lunges', SQUATS: 'Squats', WALL_SIT: 'Wall sit',
                           SITUPS: 'Situps', LEG_LIFTS: 'Leg Lifts', PLANK: 'Plank', MOUNTAIN_CLIMBERS: 'Mountain climbers',
@@ -153,7 +154,8 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
       let timeToDoThisExercise = exerciseCycleUsed.cycleTimeSec;
       //if the exercise cycle is for time, we need to divide up time for exercise and time for rest
       if(exerciseCycleUsed.isForTime) {
-          var restLength = timeToDoThisExercise / (1 + workRestRatio);
+          var restLengthUnlimited = timeToDoThisExercise / (1 + workRestRatio);
+          var restLength = restLengthUnlimited > restUpperLimit ? restUpperLimit : restLengthUnlimited;
           var workLength = timeToDoThisExercise - restLength;
           var description = getDescription(exerciseCycleUsed, workLength);
           var newActivity = new Activity(exerciseCycleUsed.name, description, workLength, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
