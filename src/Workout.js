@@ -88,8 +88,6 @@ function Workout(props) {
         </Button>
         <h1 style={{fontSize: "400%", fontFamily: "monospace"}}>{secondsToTimer(timeRemaining)}</h1>
         <h3 style={{fontSize: "200%", fontFamily: "monospace"}}>{secondsToTimer(props.timeLeftInWorkoutTotal)}</h3>
-
-        <h1>{timeRemaining < 10 && nextExerciseName != null ? "Up next: " + nextExerciseName : " "}</h1>
         &nbsp;
         <div>
           <Button color="primary"
@@ -121,8 +119,7 @@ function Workout(props) {
                            handleClose={()=>handleCloseBox(boxName.VIDEO_BOX, null)}
                            open={openVideoBox}/>
         <Toast open={openUpNextToast}
-                timeOpenFor={1000}
-                message={"Up next: " + nextExerciseName}/>
+                message={"Up Next: " + nextExerciseName}/>
 
       </div>
     );
