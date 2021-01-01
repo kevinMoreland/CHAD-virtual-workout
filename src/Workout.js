@@ -42,9 +42,10 @@ function Workout(props) {
                   onClick={props.workoutPaused == true ? () => props.onClickResume() : () => props.onClickPause()}>
                     {props.workoutPaused == true ? "Start!" : "Pause."}
           </Button>
+          &nbsp;
           <Button color="primary"
                   variant="contained"
-                  onClick={() => props.onClickNewScreen(screenNames.WELCOME, true)}>Exit</Button>
+                  onClick={() => {props.onClickResetWorkoutData(); props.onClickNewScreen(screenNames.WELCOME, true);}}>Exit</Button>
           </div>
       </div>
     );

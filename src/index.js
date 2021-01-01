@@ -27,7 +27,17 @@ class SiteWrapper extends React.Component{
       timeInSecIntoCurrExercise: 0
     }
   }
-
+  resetWorkoutData() {
+    this.setState({
+      workoutLength: 45,
+      selectedExerciseGroups: [],
+      workRestRatio: 3,
+      activities: [],
+      workoutPaused: true,
+      currentIndexInWorkout: 0,
+      timeInSecIntoCurrExercise: 0
+    });
+  }
   pauseWorkout() {
     this.setState({
       workoutPaused: true
@@ -146,7 +156,8 @@ class SiteWrapper extends React.Component{
                        timeInSecIntoCurrExercise={this.state.timeInSecIntoCurrExercise}
                        workoutPaused={this.state.workoutPaused}
                        onClickPause={()=>this.pauseWorkout()}
-                       onClickResume={()=>this.resumeWorkout()}/>);
+                       onClickResume={()=>this.resumeWorkout()}
+                       onClickResetWorkoutData={()=>this.resetWorkoutData()}/>);
     }
   }
 
