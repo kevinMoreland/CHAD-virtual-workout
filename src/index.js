@@ -135,7 +135,8 @@ class SiteWrapper extends React.Component{
     }
     else if(this.state.screen === screenNames.SET_REST) {
       return (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
-                       onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}/>);
+                       onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}
+                       workRestRatio={this.state.workRestRatio}/>);
     }
     else if(this.state.screen === screenNames.WORKOUT) {
       return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
