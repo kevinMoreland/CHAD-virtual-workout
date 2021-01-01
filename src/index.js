@@ -131,7 +131,8 @@ class SiteWrapper extends React.Component{
     }
     else if(this.state.screen === screenNames.SET_WORKOUT) {
       return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
-                          onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}/>);
+                          onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}
+                          selectedExerciseGroups={this.state.selectedExerciseGroups}/>);
     }
     else if(this.state.screen === screenNames.SET_REST) {
       return (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}

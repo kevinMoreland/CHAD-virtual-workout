@@ -9,13 +9,13 @@ function SetWorkout(props) {
     <div className="centerWrapper">
       <h1>What do you want to exercise?</h1>
       <div className="centerRow">
-        <Button color="primary" variant="contained"
+        <Button color="primary" variant={props.selectedExerciseGroups.includes(exerciseGroups.UPPER) ? "contained" : "outlined"}
                 onClick={() => props.onClickSetWorkoutType(exerciseGroups.UPPER)}>Upper</Button>
         &nbsp;
-        <Button color="primary" variant="contained"
+        <Button color="primary" variant={props.selectedExerciseGroups.includes(exerciseGroups.LOWER) ? "contained" : "outlined"}
                 onClick={() => props.onClickSetWorkoutType(exerciseGroups.LOWER)}>Lower</Button>
         &nbsp;
-        <Button color="primary" variant="contained"
+        <Button color="primary" variant={props.selectedExerciseGroups.includes(exerciseGroups.CORE)  ? "contained" : "outlined"}
                 onClick={() => props.onClickSetWorkoutType(exerciseGroups.CORE)}>Core</Button>
       </div>
       &nbsp;
