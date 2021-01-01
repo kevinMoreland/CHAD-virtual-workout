@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import screenNames from './variables/ScreenNames'
 import exerciseGroups from './variables/ExerciseGroups'
 import activityObjectElements from './variables/ActivityArray'
+import backgroundColorBehavior from './variables/BackgroundColorBehavior'
 import reportWebVitals from './reportWebVitals';
 import Welcome from './Welcome';
 import SetTime from './SetTime';
@@ -27,16 +28,27 @@ class SiteWrapper extends React.Component{
       currentIndexInWorkout: 0,
       timeInSecIntoCurrExercise: 0,
       timeLeftInWorkoutTotal: 45 * 60,
-      backgroundHue: 300
+      backgroundHue: 198,
+      backgroundSat: backgroundColorBehavior.MID_SATURATION,
+      backGroundBehavior: backgroundColorBehavior.RAINBOW
     }
   }
 
   componentDidMount() {
     setInterval(() => {
-      this.setState({
-        backgroundHue: (this.state.backgroundHue + 30) % 360
-      })
-    }, 3000);
+      if(this.state.backGroundBehavior === backgroundColorBehavior.RAINBOW) {
+        this.setState({
+          backgroundHue: (this.state.backgroundHue + 50) % 360,
+          backgroundSat: backgroundColorBehavior.MID_SATURATION
+        })
+      }
+      else if(this.state.backGroundBehavior === backgroundColorBehavior.SATURATION_PULSE) {
+        this.setState({
+          backgroundSat: this.state.backgroundSat === backgroundColorBehavior.HIGHER_SATURATION ?
+            backgroundColorBehavior.LOWER_SATURATION : backgroundColorBehavior.HIGHER_SATURATION
+        })
+      }
+    }, 2000);
   }
 
   resetWorkoutData() {
@@ -101,14 +113,17 @@ class SiteWrapper extends React.Component{
   }
 
   changeScreenTo(i) {
-    //some sort of transition?
-    //http://reactcommunity.org/react-transition-group/transition
+    //update background transitions
+    this.setState({
+          backGroundBehavior: i === screenNames.WORKOUT ? backgroundColorBehavior.SATURATION_PULSE : backgroundColorBehavior.RAINBOW
+    });
 
     //generate workout before accessing that screen
     if(i === screenNames.WORKOUT) {
       this.getWorkout();
     }
 
+    //change screen
     this.setState({
       screen: i,
     });
@@ -175,7 +190,7 @@ class SiteWrapper extends React.Component{
                        timeLeftInWorkoutTotal={this.state.timeLeftInWorkoutTotal}/>);
     }
 
-    var hslValue = "hsl(" + this.state.backgroundHue + ", 50%, 75%)";
+    var hslValue = "hsl(" + this.state.backgroundHue + ", " + this.state.backgroundSat + "%, 75%)";
     return <div className="backgroundPulse" style={{backgroundColor: hslValue}}>{pageHTML}</div>
   }
 
