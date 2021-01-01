@@ -53,7 +53,8 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     }
 
     const workoutGroups = {UPPER: 'upper', LOWER: 'lower', CORE: 'core'};
-
+    const rest = "Rest";
+    const meditate = "Meditate";
     //it is important that all lengths divide by 4 and 5 evenly so that even work:rest portions can be divided
     //based on the ratios of work:rest we specified (1:1, 3:1, 5:1).
     //Also, the potential excess of combining any of these before hitting 300 must follow these requirments
@@ -85,14 +86,56 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
                            new ExerciseCycle(exerNames.LEG_LIFTS,         exerciseLengths.LONG,   null, null),
                            new ExerciseCycle(exerNames.PLANK,             exerciseLengths.MEDIUM, null, null),
                            new ExerciseCycle(exerNames.MOUNTAIN_CLIMBERS, exerciseLengths.MEDIUM, null, null)];
+
     class Activity {
-        constructor(name, description, amountTime, numReps, numSecToDoReps) {
+        constructor(name, amountTime, numReps, numSecToDoReps) {
             this.name = name;
-            this.description = description;
             this.amountTime = amountTime;
             this.numReps = numReps;
             this.numSecToDoReps = numSecToDoReps;
             this.isForTime = (numReps == null || numSecToDoReps == null);
+            this.description = "";
+        }
+        secondsIntToString(amountTime) {
+          var timeAsString = "";
+          var minutes = Math.floor(amountTime/60);
+          if(minutes > 0) {
+            timeAsString += minutes;
+            if(minutes == 1) {
+              timeAsString += " minute"
+            }
+            else {
+              timeAsString += " minutes"
+            }
+          }
+          var seconds = amountTime - (minutes * 60);
+          if(seconds > 0) {
+            if(minutes > 0) {
+              timeAsString += " ";
+            }
+            timeAsString += seconds + " seconds";
+          }
+          return timeAsString;
+        }
+        giveDescription() {
+          if(this.name === rest) {
+            this.description = "Take a rest!";
+            return;
+          }
+          else if(this.name == meditate) {
+            this.description = "You didn't specify anything you want to exercise!";
+            return;
+          }
+          this.description = "";
+          if(this.isForTime) {
+            this.description = "Do as many as you can in " +  this.secondsIntToString(this.amountTime) + "!";
+            if(nonRepWorkouts.includes(this.name)) {
+              this.description = "Keep going for " + this.secondsIntToString(this.amountTime) + "!";
+            }
+          }
+          else {
+            this.description = "Do " + this.numReps + " every " + this.numSecToDoReps + " seconds for " +  this.secondsIntToString(this.amountTime) + "!";
+          }
         }
         equals(otherActivity) {
           return otherActivity.name === this.name &&
@@ -101,13 +144,15 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     }
 
     function getRest(length) {
-        return new Activity("Rest", "Take a rest!", length, null, null);
+      restActivity = new Activity(rest, length, null, null);
+      restActivity.giveDescription();
+      return restActivity;
     }
 
     function getRandomExerciseCycle(workoutGroup) {
       var exerciseCycleUsed = null;
       if(workoutGroup == workoutGroups.UPPER) {
-        exerciseCycleUsed = upperWorkouts[Math.floor(Math.random() * upperWorkouts.length)];
+        exerciseCycleUsed = upperWorkouts[1];//upperWorkouts[Math.floor(Math.random() * upperWorkouts.length)];
       }
       else if(workoutGroup == workoutGroups.LOWER) {
         exerciseCycleUsed = lowerWorkouts[Math.floor(Math.random() * lowerWorkouts.length)];
@@ -118,38 +163,6 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
       return exerciseCycleUsed;
     }
 
-    function secondsIntToString(amountTime) {
-      var timeAsString = "";
-      var minutes = Math.floor(amountTime/60);
-      if(minutes > 0) {
-        timeAsString += minutes;
-        if(minutes == 1) {
-          timeAsString += " minute"
-        }
-        else {
-          timeAsString += " minutes"
-        }
-      }
-      var seconds = amountTime - (minutes * 60);
-      if(seconds > 0) {
-        timeAsString += " " + seconds + " seconds";
-      }
-      return timeAsString;
-    }
-    function getDescription(exerciseCycleUsed, workLength){
-      var description = "";
-      if(exerciseCycleUsed.isForTime) {
-        description = "Do as many as you can in " +  secondsIntToString(workLength) + "!";
-        if(nonRepWorkouts.includes(exerciseCycleUsed.name)) {
-          description = "Keep going for " + secondsIntToString(workLength) + "!";
-        }
-      }
-      else {
-        description = "Do " + exerciseCycleUsed.numReps + " every " + exerciseCycleUsed.numSecToDoReps + " seconds for " +  secondsIntToString(workLength) + "!";
-
-      }
-      return description;
-    }
     function addActivity(activities, exerciseCycleUsed) {
       let timeToDoThisExercise = exerciseCycleUsed.cycleTimeSec;
       //if the exercise cycle is for time, we need to divide up time for exercise and time for rest
@@ -157,16 +170,15 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
           var restLengthUnlimited = timeToDoThisExercise / (1 + workRestRatio);
           var restLength = restLengthUnlimited > restUpperLimit ? restUpperLimit : restLengthUnlimited;
           var workLength = timeToDoThisExercise - restLength;
-          var description = getDescription(exerciseCycleUsed, workLength);
-          var newActivity = new Activity(exerciseCycleUsed.name, description, workLength, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
+          var newActivity = new Activity(exerciseCycleUsed.name, workLength, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
 
           //previous exercise is exact same. merge these two.
           if(activities.length >= 1 && activities[activities.length - 1].equals(newActivity)) {
               var prevActivity = activities.pop();
               newActivity.amountTime += prevActivity.amountTime;
-              description = getDescription(exerciseCycleUsed, newActivity.amountTime);
-              newActivity.description = description;
           }
+
+          newActivity.giveDescription();
           activities.push(newActivity);
 
           if(restLength > 0) {
@@ -175,16 +187,14 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
       }
       //otherwise, the rest is built in to the workout
       else {
-          var description = getDescription(exerciseCycleUsed, timeToDoThisExercise);
-          var newActivity = new Activity(exerciseCycleUsed.name, description, timeToDoThisExercise, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
+          var newActivity = new Activity(exerciseCycleUsed.name, timeToDoThisExercise, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
 
           //previous exercise is exact same. merge these two.
           if(activities.length >= 1 && activities[activities.length - 1].equals(newActivity)) {
                var prevActivity = activities.pop();
                newActivity.amountTime += prevActivity.amountTime;
-               description = getDescription(exerciseCycleUsed, newActivity.amountTime);
-               newActivity.description = description;
            }
+          newActivity.giveDescription();
           activities.push(newActivity);
       }
     }
@@ -225,7 +235,8 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //---------MAIN CODE OF GENERATE WORKOUT-------------
     var activities = [];
     if(!hasLower && !hasUpper && !hasCore) {
-        var exercise = new Activity("Meditate", "You didn't specify anything you want to exercise!", workoutLength, null, null);
+        var activity = new Activity(meditate, workoutLength, null, null);
+        activity.giveDescription();
         activities.push(exercise);
         return activities;
     }
