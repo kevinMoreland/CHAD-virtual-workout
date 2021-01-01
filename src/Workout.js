@@ -74,7 +74,8 @@ function Workout(props) {
     let numSecToDoReps = currentActivity[activityObjectElements.NUM_SEC_TO_DO_REPS];
     let isForTime = (numReps == null || numSecToDoReps == null);
     let openUpNextToast = (timeRemaining > 1 && timeRemaining < 10 && nextExerciseName != null);
-
+    let openRepReminderToast = (numSecToDoReps != null &&
+      (props.timeInSecIntoCurrExercise % numSecToDoReps > 0 && props.timeInSecIntoCurrExercise % numSecToDoReps <= 4));
     var interval = null;
     //do something if (props.timeInSecIntoCurrExercise) % 30 == 0  || props.timeInSecIntoCurrExercise - 1 & 30 == 0 so display changes for 2 seconds to alert user
 
@@ -118,8 +119,18 @@ function Workout(props) {
                            videoURL="https://www.youtube.com/embed/EPXXI-_sugo"
                            handleClose={()=>handleCloseBox(boxName.VIDEO_BOX, null)}
                            open={openVideoBox}/>
+
         <Toast open={openUpNextToast}
-                message={"Up Next: " + nextExerciseName}/>
+                message={"Up Next: " + nextExerciseName}
+                horizontalPos="center"
+                verticalPos="bottom"
+                type="info"/>
+
+        <Toast open={openRepReminderToast}
+                        message={"Do another " + numReps + " now!"}
+                        horizontalPos="center"
+                        verticalPos="top"
+                        type="error"/>
 
       </div>
     );

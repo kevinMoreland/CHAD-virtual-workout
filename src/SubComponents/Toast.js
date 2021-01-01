@@ -4,6 +4,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 
+//also accept an audio to play as option
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -25,8 +26,8 @@ function Toast(props) {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={props.open} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
-        <Alert severity="info">
+      <Snackbar open={props.open} anchorOrigin={{vertical: props.verticalPos, horizontal: props.horizontalPos}}>
+        <Alert severity={props.type}>
           <h2 style={{marginRight:24, marginLeft:20}}>{props.message}</h2>
         </Alert>
       </Snackbar>

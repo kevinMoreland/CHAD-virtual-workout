@@ -152,7 +152,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     function getRandomExerciseCycle(workoutGroup) {
       var exerciseCycleUsed = null;
       if(workoutGroup == workoutGroups.UPPER) {
-        exerciseCycleUsed = upperWorkouts[1];//upperWorkouts[Math.floor(Math.random() * upperWorkouts.length)];
+        exerciseCycleUsed = upperWorkouts[Math.floor(Math.random() * upperWorkouts.length)];
       }
       else if(workoutGroup == workoutGroups.LOWER) {
         exerciseCycleUsed = lowerWorkouts[Math.floor(Math.random() * lowerWorkouts.length)];
