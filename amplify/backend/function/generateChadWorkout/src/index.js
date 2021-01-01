@@ -182,7 +182,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
           if(activities.length >= 1 && activities[activities.length - 1].equals(newActivity)) {
                var prevActivity = activities.pop();
                newActivity.amountTime += prevActivity.amountTime;
-               description = getDescription(exerciseCycleUsed.isForTime, newActivity.amountTime);
+               description = getDescription(exerciseCycleUsed, newActivity.amountTime);
                newActivity.description = description;
            }
           activities.push(newActivity);

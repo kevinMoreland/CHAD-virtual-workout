@@ -28,6 +28,7 @@ class SiteWrapper extends React.Component{
       timeLeftInWorkoutTotal: 45 * 60
     }
   }
+
   resetWorkoutData() {
     this.setState({
       workoutLength: 45,
@@ -65,7 +66,7 @@ class SiteWrapper extends React.Component{
           currentIndexInWorkout: this.state.currentIndexInWorkout + 1
         });
       }
-    }, 200);
+    }, 1000);
 
     setTimeout(() => { clearInterval(this.interval); alert("workout Finished! transition to finish screen, which has button to go to entry screen, and clears all data"); }, this.state.workoutLength * 60 * 1000);
   }

@@ -1,11 +1,13 @@
 import { Button } from '@material-ui/core';
 import React from 'react';
+import './index.css';
 
 import { CircularProgress } from '@material-ui/core';
 import activityObjectElements from './variables/ActivityArray'
 import screenNames from './variables/ScreenNames'
 import './CenterWrapper.css';
 import ConfirmBox from './SubComponents/ConfirmBox'
+import Toast from './SubComponents/Toast'
 import AlertBoxWithVideo from './SubComponents/AlertBoxWithVideo'
 
 function Workout(props) {
@@ -15,7 +17,7 @@ function Workout(props) {
   const boxName = {EXIT_BOX: 'exitBox', VIDEO_BOX: 'videoBox'};
   const [openExitBox, setOpenExitBox] = React.useState(false);
   const [openVideoBox, setOpenVideoBox] = React.useState(false);
-  
+
   const handleOpenBox = (boxUsing) => {
     if(!props.workoutPaused) {
       props.onClickPause();
@@ -71,19 +73,21 @@ function Workout(props) {
     let numReps = currentActivity[activityObjectElements.NUM_REPS];
     let numSecToDoReps = currentActivity[activityObjectElements.NUM_SEC_TO_DO_REPS];
     let isForTime = (numReps == null || numSecToDoReps == null);
+    let openUpNextToast = (timeRemaining > 1 && timeRemaining < 10 && nextExerciseName != null);
+
     var interval = null;
     //do something if (props.timeInSecIntoCurrExercise) % 30 == 0  || props.timeInSecIntoCurrExercise - 1 & 30 == 0 so display changes for 2 seconds to alert user
 
     //for how do I do this: on click, pause workout and open in an alert box a video demonstration
     return (
       <div className="centerWrapper">
-        <h1>{currentExerciseName}</h1>
-        <h2>{currentExerciseDescription}</h2>
+        <h1 style={{fontSize: "300%"}}>{currentExerciseName}</h1>
+        <h1 style={{fontSize: "200%"}}>{currentExerciseDescription}</h1>
         <Button color="primary" onClick={()=>handleOpenBox(boxName.VIDEO_BOX)} padding={100} margin={0}>
           How do I do this exercise?
         </Button>
-        <h1>{secondsToTimer(timeRemaining)}</h1>
-        <h3>{secondsToTimer(props.timeLeftInWorkoutTotal)}</h3>
+        <h1 style={{fontSize: "400%", fontFamily: "monospace"}}>{secondsToTimer(timeRemaining)}</h1>
+        <h3 style={{fontSize: "200%", fontFamily: "monospace"}}>{secondsToTimer(props.timeLeftInWorkoutTotal)}</h3>
 
         <h1>{timeRemaining < 10 && nextExerciseName != null ? "Up next: " + nextExerciseName : " "}</h1>
         &nbsp;
@@ -112,10 +116,14 @@ function Workout(props) {
                     handleDeclineClose={()=>handleCloseBox(boxName.EXIT_BOX, false)}
                     declineText="No, continue the workout!"
                     open={openExitBox}/>
-        <AlertBoxWithVideo title="Example of {currentExerciseName}"
+        <AlertBoxWithVideo title={"Example of " + currentExerciseName}
                            videoURL="https://www.youtube.com/embed/EPXXI-_sugo"
                            handleClose={()=>handleCloseBox(boxName.VIDEO_BOX, null)}
                            open={openVideoBox}/>
+        <Toast open={openUpNextToast}
+                timeOpenFor={1000}
+                message={"Up next: " + nextExerciseName}/>
+
       </div>
     );
   }
