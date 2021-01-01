@@ -22,11 +22,11 @@ function SetWorkout(props) {
       <div className="centerRow">
         <Button color="primary"
                 variant="contained"
-                onClick={() => props.onClickNewScreen(screenNames.SET_TIME, false)}>Back</Button>
+                onClick={() => props.onClickNewScreen(screenNames.SET_TIME)}>Back</Button>
         &nbsp;
         <Button color="primary"
                 variant="contained"
-                onClick={() => props.onClickNewScreen(screenNames.SET_REST, false)}>Let's go!</Button>
+                onClick={() => props.onClickNewScreen(screenNames.SET_REST)}>Let's go!</Button>
       </div>
 
     </div>

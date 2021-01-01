@@ -5,14 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 
 function SetRest(props) {
-/*
-        <Fade in={checked}>
-          <Paper elevation={4} className={classes.paper}>
-            <svg className={classes.svg}>
-              <polygon points="0,100 50,00, 100,100" className={classes.polygon} />
-            </svg>
-          </Paper>
-        </Fade>*/
+
   return (
     <div className="centerWrapper">
       <h1>How much rest do you need?</h1>
@@ -30,11 +23,11 @@ function SetRest(props) {
       <div className="centerRow">
         <Button color="primary"
                 variant="contained"
-                onClick={() => props.onClickNewScreen(screenNames.SET_WORKOUT, false)}>Back</Button>
+                onClick={() => props.onClickNewScreen(screenNames.SET_WORKOUT)}>Back</Button>
         &nbsp;
         <Button color="primary"
                 variant="contained"
-                onClick={() => props.onClickNewScreen(screenNames.WORKOUT, false)}>Let's go!</Button>
+                onClick={() => props.onClickNewScreen(screenNames.WORKOUT)}>Let's go!</Button>
       </div>
 
     </div>

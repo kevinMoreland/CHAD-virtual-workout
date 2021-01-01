@@ -85,16 +85,13 @@ class SiteWrapper extends React.Component{
     });
   }
 
-  changeScreenTo(i, warningEnabled) {
+  changeScreenTo(i) {
     //some sort of transition?
     //http://reactcommunity.org/react-transition-group/transition
 
-    //time to generate workout
+    //generate workout before accessing that screen
     if(i === screenNames.WORKOUT) {
       this.getWorkout();
-    }
-    if(warningEnabled) {
-      alert("Add a warning here to ensure a use is sure about action");
     }
 
     this.setState({
@@ -132,25 +129,25 @@ class SiteWrapper extends React.Component{
   }
   render() {
     if(this.state.screen === screenNames.WELCOME) {
-      return (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}/>);
+      return (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i)}/>);
     }
     else if(this.state.screen === screenNames.SET_TIME) {
       return (<SetTime workoutLength={this.state.workoutLength}
-                       onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
+                       onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                        onClickTimer={(i) => this.addMinutesToWorkout(i)}/>);
     }
     else if(this.state.screen === screenNames.SET_WORKOUT) {
-      return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
+      return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                           onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}
                           selectedExerciseGroups={this.state.selectedExerciseGroups}/>);
     }
     else if(this.state.screen === screenNames.SET_REST) {
-      return (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
+      return (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                        onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}
                        workRestRatio={this.state.workRestRatio}/>);
     }
     else if(this.state.screen === screenNames.WORKOUT) {
-      return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i, b)}
+      return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                        activities={this.state.activities}
                        currentIndexInWorkout={this.state.currentIndexInWorkout}
                        timeInSecIntoCurrExercise={this.state.timeInSecIntoCurrExercise}

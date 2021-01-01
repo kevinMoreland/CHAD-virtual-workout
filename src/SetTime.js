@@ -14,7 +14,7 @@ function SetTime(props) {
         <Button color="primary" variant="contained" onClick={() => props.onClickTimer(15)}>+</Button>
       </div>
       &nbsp;
-      <Button color="primary" variant="contained" onClick={() => props.onClickNewScreen(screenNames.SET_WORKOUT, false)}>ok!</Button>
+      <Button color="primary" variant="contained" onClick={() => props.onClickNewScreen(screenNames.SET_WORKOUT)}>ok!</Button>
     </div>
   );
 }
