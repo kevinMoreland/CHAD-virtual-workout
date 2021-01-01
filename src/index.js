@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './index.css';
 import screenNames from './variables/ScreenNames'
 import exerciseGroups from './variables/ExerciseGroups'
 import activityObjectElements from './variables/ActivityArray'
@@ -11,11 +10,13 @@ import SetTime from './SetTime';
 import SetWorkout from './SetWorkout';
 import SetRest from './SetRest';
 import Workout from './Workout';
+import './mainStyle.css';
+import './index.css';
 
 class SiteWrapper extends React.Component{
-
   constructor(props) {
     super(props)
+    this.color = 0;
     this.state = {
       screen: screenNames.WELCOME,
       workoutLength: 45,
@@ -25,8 +26,17 @@ class SiteWrapper extends React.Component{
       workoutPaused: true,
       currentIndexInWorkout: 0,
       timeInSecIntoCurrExercise: 0,
-      timeLeftInWorkoutTotal: 45 * 60
+      timeLeftInWorkoutTotal: 45 * 60,
+      backgroundHue: 300
     }
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      this.setState({
+        backgroundHue: (this.state.backgroundHue + 30) % 360
+      })
+    }, 3000);
   }
 
   resetWorkoutData() {
@@ -134,26 +144,27 @@ class SiteWrapper extends React.Component{
     });
   }
   render() {
+    let pageHTML = (<h1>Page Not Found</h1>);
     if(this.state.screen === screenNames.WELCOME) {
-      return (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i)}/>);
+      pageHTML = (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i)}/>);
     }
     else if(this.state.screen === screenNames.SET_TIME) {
-      return (<SetTime workoutLength={this.state.workoutLength}
+      pageHTML = (<SetTime workoutLength={this.state.workoutLength}
                        onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                        onClickTimer={(i) => this.addMinutesToWorkout(i)}/>);
     }
     else if(this.state.screen === screenNames.SET_WORKOUT) {
-      return (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
+      pageHTML = (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                           onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}
                           selectedExerciseGroups={this.state.selectedExerciseGroups}/>);
     }
     else if(this.state.screen === screenNames.SET_REST) {
-      return (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i)}
+      pageHTML = (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                        onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}
                        workRestRatio={this.state.workRestRatio}/>);
     }
     else if(this.state.screen === screenNames.WORKOUT) {
-      return (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
+      pageHTML = (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
                        activities={this.state.activities}
                        currentIndexInWorkout={this.state.currentIndexInWorkout}
                        timeInSecIntoCurrExercise={this.state.timeInSecIntoCurrExercise}
@@ -163,6 +174,9 @@ class SiteWrapper extends React.Component{
                        onClickResetWorkoutData={()=>this.resetWorkoutData()}
                        timeLeftInWorkoutTotal={this.state.timeLeftInWorkoutTotal}/>);
     }
+
+    var hslValue = "hsl(" + this.state.backgroundHue + ", 50%, 75%)";
+    return <div className="backgroundPulse" style={{backgroundColor: hslValue}}>{pageHTML}</div>
   }
 
 }

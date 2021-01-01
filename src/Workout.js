@@ -1,11 +1,10 @@
 import { Button } from '@material-ui/core';
 import React from 'react';
-import './index.css';
 
 import { CircularProgress } from '@material-ui/core';
 import activityObjectElements from './variables/ActivityArray'
 import screenNames from './variables/ScreenNames'
-import './CenterWrapper.css';
+import './mainStyle.css';
 import ConfirmBox from './SubComponents/ConfirmBox'
 import Toast from './SubComponents/Toast'
 import AlertBoxWithVideo from './SubComponents/AlertBoxWithVideo'

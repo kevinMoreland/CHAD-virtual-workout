@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import './CenterWrapper.css';
+import './mainStyle.css';
 import screenNames from './variables/ScreenNames'
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
