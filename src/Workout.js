@@ -40,7 +40,20 @@ function Workout(props) {
     }
   };
   //-------------------
-  
+  const secondsToTimer = (amountTimeInSec) => {
+    var output = "";
+    if(Math.floor(amountTimeInSec / 60) < 10) {
+      output += "0";
+    }
+    output += Math.floor(amountTimeInSec / 60);
+    output += ":"
+    var seconds = amountTimeInSec - (Math.floor(amountTimeInSec / 60) * 60);
+    if(seconds < 10) {
+      output += "0";
+    }
+    output += seconds;
+    return output;
+  }
   if(props.activities == []) {
     return (<div className="centerWrapper"><CircularProgress /></div>);
   }
@@ -64,13 +77,15 @@ function Workout(props) {
     //for how do I do this: on click, pause workout and open in an alert box a video demonstration
     return (
       <div className="centerWrapper">
-          <h1>{currentExerciseName}</h1>
-          <h2>{currentExerciseDescription}</h2>
-          <Button color="primary" onClick={()=>handleOpenBox(boxName.VIDEO_BOX)} padding={100} margin={0}>
-            How do I do this exercise?
-          </Button>
-          <h1>{Math.floor(timeRemaining / 60) < 10 ? "0": ""}{Math.floor(timeRemaining / 60)}:{timeRemaining - (Math.floor(timeRemaining / 60) * 60) < 10 ? "0" : ""}{timeRemaining - (Math.floor(timeRemaining / 60) * 60)}</h1>
-          <h1>{timeRemaining < 10 && nextExerciseName != null ? "Up next: " + nextExerciseName : " "}</h1>
+        <h1>{currentExerciseName}</h1>
+        <h2>{currentExerciseDescription}</h2>
+        <Button color="primary" onClick={()=>handleOpenBox(boxName.VIDEO_BOX)} padding={100} margin={0}>
+          How do I do this exercise?
+        </Button>
+        <h1>{secondsToTimer(timeRemaining)}</h1>
+        <h3>{secondsToTimer(props.timeLeftInWorkoutTotal)}</h3>
+
+        <h1>{timeRemaining < 10 && nextExerciseName != null ? "Up next: " + nextExerciseName : " "}</h1>
         &nbsp;
         <div>
           <Button color="primary"
@@ -83,13 +98,13 @@ function Workout(props) {
           &nbsp;
           &nbsp;
           &nbsp;
+
           <Button color="primary"
                   variant="contained"
                   onClick={()=>handleOpenBox(boxName.EXIT_BOX)}>
             <h3>Cancel</h3>
           </Button>
-          </div>
-
+        </div>
         <ConfirmBox title="Cancel workout?"
                     description="Do you want to be a lazy bones and cancel this workout?"
                     handleConfirmClose={()=>handleCloseBox(boxName.EXIT_BOX, true)}

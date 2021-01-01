@@ -24,7 +24,8 @@ class SiteWrapper extends React.Component{
       activities: [],
       workoutPaused: true,
       currentIndexInWorkout: 0,
-      timeInSecIntoCurrExercise: 0
+      timeInSecIntoCurrExercise: 0,
+      timeLeftInWorkoutTotal: 45 * 60
     }
   }
   resetWorkoutData() {
@@ -35,7 +36,8 @@ class SiteWrapper extends React.Component{
       activities: [],
       workoutPaused: true,
       currentIndexInWorkout: 0,
-      timeInSecIntoCurrExercise: 0
+      timeInSecIntoCurrExercise: 0,
+      timeLeftInWorkoutTotal: 45 * 60
     });
   }
   pauseWorkout() {
@@ -50,7 +52,9 @@ class SiteWrapper extends React.Component{
     });
 
     this.interval = setInterval(() => {
-      this.setState({timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1});
+      this.setState({
+        timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1,
+        timeLeftInWorkoutTotal: this.state.timeLeftInWorkoutTotal - 1});
       if(this.state.currentIndexInWorkout < this.state.activities.length &&
          this.state.timeInSecIntoCurrExercise === this.state.activities[this.state.currentIndexInWorkout][2]) {
         console.log("exercise: " + this.state.activities[this.state.currentIndexInWorkout]);
@@ -102,6 +106,7 @@ class SiteWrapper extends React.Component{
     if(this.state.workoutLength + i > 0 && this.state.workoutLength + i <= 180)
     this.setState({
       workoutLength: this.state.workoutLength + i,
+      timeLeftInWorkoutTotal: (this.state.workoutLength + i) * 60
     });
   }
 
@@ -154,7 +159,8 @@ class SiteWrapper extends React.Component{
                        workoutPaused={this.state.workoutPaused}
                        onClickPause={()=>this.pauseWorkout()}
                        onClickResume={()=>this.resumeWorkout()}
-                       onClickResetWorkoutData={()=>this.resetWorkoutData()}/>);
+                       onClickResetWorkoutData={()=>this.resetWorkoutData()}
+                       timeLeftInWorkoutTotal={this.state.timeLeftInWorkoutTotal}/>);
     }
   }
 
