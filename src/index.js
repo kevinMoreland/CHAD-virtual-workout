@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import screenNames from './variables/ScreenNames'
 import exerciseGroups from './variables/ExerciseGroups'
+import activityObjectElements from './variables/ActivityArray'
 import reportWebVitals from './reportWebVitals';
 import Welcome from './Welcome';
 import SetTime from './SetTime';
@@ -50,9 +51,9 @@ class SiteWrapper extends React.Component{
           currentIndexInWorkout: this.state.currentIndexInWorkout + 1
         });
       }
-    }, 1000);
+    }, 200);
 
-    setTimeout(() => { alert("workout Finished! transition to finish screen, which has button to go to entry screen, and clears all data"); }, this.state.workoutLength * 60 * 1000);
+    setTimeout(() => { clearInterval(this.interval); alert("workout Finished! transition to finish screen, which has button to go to entry screen, and clears all data"); }, this.state.workoutLength * 60 * 1000);
   }
   setExerciseGroups(i) {
     if(this.state.selectedExerciseGroups.includes(i)) {
@@ -106,8 +107,14 @@ class SiteWrapper extends React.Component{
     const url = 'https://x9txjb9yi5.execute-api.eu-west-1.amazonaws.com/staging/workout' + params;
     const response = await fetch(url);
     const data = await response.json();
-    var activitiesArray = data.map(activity => [activity.name, activity.description, activity.amountTime, activity.numReps, activity.numSecToDoReps, activity.isForTime]);
-    alert(activitiesArray);
+    var activitiesArray = data.map(activity =>
+      {var mappedTo = new Array(activityObjectElements.NUM_ELEMENTS);
+       mappedTo[activityObjectElements.NAME] = activity.name;
+       mappedTo[activityObjectElements.DESC] = activity.description;
+       mappedTo[activityObjectElements.TIME_IN_SEC] = parseInt(activity.amountTime);
+       mappedTo[activityObjectElements.NUM_REPS] = activity.numReps;
+       mappedTo[activityObjectElements.NUM_SEC_TO_DO_REPS] = activity.numSecToDoReps;
+       return mappedTo;});
     console.log(activitiesArray);
     this.setState({
       activities: activitiesArray

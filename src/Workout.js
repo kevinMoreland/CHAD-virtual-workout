@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
 import { CircularProgress } from '@material-ui/core';
-
+import activityObjectElements from './variables/ActivityArray'
 import screenNames from './variables/ScreenNames'
 import './CenterWrapper.css';
 
@@ -14,10 +14,18 @@ function Workout(props) {
   }
   else{
     let activities = props.activities;
-    let currentExerciseName = activities[props.currentIndexInWorkout][0];
-    let nextExerciseName = props.currentIndexInWorkout + 1 < activities.length ? activities[props.currentIndexInWorkout + 1][0] : null;
-    let currentExerciseDescription = activities[props.currentIndexInWorkout][1];
-    let timeRemaining = activities[props.currentIndexInWorkout][2] - props.timeInSecIntoCurrExercise;
+    let currentActivity = activities[props.currentIndexInWorkout];
+    let currentExerciseName = currentActivity[activityObjectElements.NAME];
+    let nextExerciseName = props.currentIndexInWorkout + 1 < activities.length ? activities[props.currentIndexInWorkout + 1][activityObjectElements.NAME] : null;
+    let currentExerciseDescription = currentActivity[activityObjectElements.DESC];
+    let timeRemaining = currentActivity[activityObjectElements.TIME_IN_SEC] - props.timeInSecIntoCurrExercise;
+
+    let numReps = currentActivity[activityObjectElements.NUM_REPS];
+    let numSecToDoReps = currentActivity[activityObjectElements.NUM_SEC_TO_DO_REPS];
+    let isForTime = (numReps == null || numSecToDoReps == null);
+    var interval = null;
+    //do something if (props.timeInSecIntoCurrExercise) % 30 == 0  || props.timeInSecIntoCurrExercise - 1 & 30 == 0 so display changes for 2 seconds to alert user
+
     return (
       <div className="centerWrapper">
         <div>
@@ -34,11 +42,6 @@ function Workout(props) {
                   onClick={props.workoutPaused == true ? () => props.onClickResume() : () => props.onClickPause()}>
                     {props.workoutPaused == true ? "Start!" : "Pause."}
           </Button>
-          <Button color="primary"
-                            variant="contained"
-                            onClick={() => props.onClickResume()}>
-                              Test
-                    </Button>
           <Button color="primary"
                   variant="contained"
                   onClick={() => props.onClickNewScreen(screenNames.WELCOME, true)}>Exit</Button>
