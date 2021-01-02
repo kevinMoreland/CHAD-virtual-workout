@@ -175,6 +175,7 @@ class SiteWrapper extends React.Component{
        mappedTo[activityObjectElements.TIME_IN_SEC] = parseInt(activity.amountTime);
        mappedTo[activityObjectElements.NUM_REPS] = activity.numReps;
        mappedTo[activityObjectElements.NUM_SEC_TO_DO_REPS] = activity.numSecToDoReps;
+       mappedTo[activityObjectElements.VIDEO_LINK] = activity.videoLink;
        return mappedTo;});
     console.log(activitiesArray);
     this.setState({

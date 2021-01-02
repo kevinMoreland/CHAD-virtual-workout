@@ -43,8 +43,10 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //represents the smallest unit of a certain type of way of doing an exercise
     class ExerciseCycle {
         //cycleTimeSec converted to minutes should ideally be something that divides 5 minutes well, but not greater than 5 minutes
-        constructor(name, cycleTimeSec, numReps, numSecToDoReps) {
-            this.name = name;
+        constructor(nameAndLink, cycleTimeSec, numReps, numSecToDoReps) {
+            this.name = nameAndLink.name;
+            this.videoURL = nameAndLink.videoURL;
+            this.nameAndLink = nameAndLink;
             this.cycleTimeSec = cycleTimeSec;
             this.numReps = numReps;
             this.numSecToDoReps = numSecToDoReps;
@@ -53,8 +55,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     }
 
     const workoutGroups = {UPPER: 'upper', LOWER: 'lower', CORE: 'core'};
-    const rest = "Rest";
-    const meditate = "Meditate";
+
     //it is important that all lengths divide by 4 and 5 evenly so that even work:rest portions can be divided
     //based on the ratios of work:rest we specified (1:1, 3:1, 5:1).
     //Also, the potential excess of combining any of these before hitting 300 must follow these requirments
@@ -62,39 +63,58 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //our target length is 300. we can only do 60 of that exercise. This is okay, 60 divides as per the ratio)
     const exerciseLengths = {SHORT: 60, MEDIUM: 120, LONG: 300};
     const restUpperLimit = 45;
-    const exerNames = {PUSHUPS: 'Pushups', DIPS: 'Dips', ARM_HAULERS: 'Arm haulers',
-                          LUNGES: 'Lunges', SQUATS: 'Squats', WALL_SIT: 'Wall sit',
-                          SITUPS: 'Situps', LEG_LIFTS: 'Leg Lifts', PLANK: 'Plank', MOUNTAIN_CLIMBERS: 'Mountain climbers',
-                          JUMPING_JACKS: 'Jumping jacks', BEAR_CRAWLS: 'Bear crawls', CRAB_WALKS: 'Crab walks'};
+    class ExerciseNameAndLink {
+      constructor(name, videoURL) {
+        this.name = name;
+        this.videoURL = videoURL;
+      }
+    }
+    const exerNamesAndLinks = {PUSHUPS:           new ExerciseNameAndLink('Pushups', "https://www.youtube.com/embed/IODxDxX7oi4"),
+                               DIPS:              new ExerciseNameAndLink('Chair dips', "https://www.youtube.com/embed/u5HbUxh40Y4"),
+                               ARM_HAULERS:       new ExerciseNameAndLink('Arm haulers', "https://www.youtube.com/embed/P4SBXSIwNpc"),
+                               LUNGES:            new ExerciseNameAndLink('Lunges', "https://www.youtube.com/embed/COKYKgQ8KR0"),
+                               SQUATS:            new ExerciseNameAndLink('Squats', "https://www.youtube.com/embed/otzWCWpuW-A"),
+                               WALL_SIT:          new ExerciseNameAndLink('Wall sit', "https://www.youtube.com/embed/y-wV4Venusw"),
+                               SITUPS:            new ExerciseNameAndLink('Situps', "https://www.youtube.com/embed/jDwoBqPH0jk"),
+                               LEG_LIFTS:         new ExerciseNameAndLink('Leg Lifts', "https://www.youtube.com/embed/l4kQd9eWclE"),
+                               PLANK:             new ExerciseNameAndLink('Plank', "https://www.youtube.com/embed/pSHjTRCQxIw"),
+                               MOUNTAIN_CLIMBERS: new ExerciseNameAndLink('Mountain climbers', "https://www.youtube.com/embed/ZhiCSdOVJp0"),
+                               JUMPING_JACKS:     new ExerciseNameAndLink('Jumping jacks', "https://www.youtube.com/embed/nGaXj3kkmrU"),
+                               BEAR_CRAWLS:       new ExerciseNameAndLink('Bear crawls', "https://www.youtube.com/embed/6muIdIDEE2E"),
+                               CRAB_WALKS:        new ExerciseNameAndLink('Crab walks', "https://www.youtube.com/embed/I-3r4cl4ahA"),
+                               REST:              new ExerciseNameAndLink('Rest', null),
+                               MEDITATE:          new ExerciseNameAndLink('Meditate', "https://www.youtube.com/embed/thcEuMDWxoI")};
 
     //important for description of workouts. (ex, don't want to say "do as many as you can" for wall sits, doesn't make sense)
-    const nonRepWorkouts = [exerNames.ARM_HAULERS, exerNames.WALL_SIT, exerNames.PLANK, exerNames.BEAR_CRAWLS, exerNames.CRAB_WALKS];
-    const upperWorkouts = [new ExerciseCycle(exerNames.PUSHUPS,     exerciseLengths.SHORT,  null, null),
-                           new ExerciseCycle(exerNames.PUSHUPS,     exerciseLengths.LONG,   10,   30),
-                           new ExerciseCycle(exerNames.DIPS,        exerciseLengths.SHORT,  null, null),
-                           new ExerciseCycle(exerNames.DIPS,        exerciseLengths.LONG,   15,   30),
-                           new ExerciseCycle(exerNames.ARM_HAULERS, exerciseLengths.SHORT,  null, null),
-                           new ExerciseCycle(exerNames.BEAR_CRAWLS, exerciseLengths.MEDIUM, null, null),
-                           new ExerciseCycle(exerNames.CRAB_WALKS,  exerciseLengths.MEDIUM, null, null)];
+    const nonRepWorkouts = [exerNamesAndLinks.ARM_HAULERS.name, exerNamesAndLinks.WALL_SIT.name,
+                            exerNamesAndLinks.PLANK.name,       exerNamesAndLinks.BEAR_CRAWLS.name, exerNamesAndLinks.CRAB_WALKS.name];
+    const upperWorkouts = [new ExerciseCycle(exerNamesAndLinks.PUSHUPS,     exerciseLengths.SHORT,  null, null),
+                           new ExerciseCycle(exerNamesAndLinks.PUSHUPS,     exerciseLengths.LONG,   10,   30),
+                           new ExerciseCycle(exerNamesAndLinks.DIPS,        exerciseLengths.SHORT,  null, null),
+                           new ExerciseCycle(exerNamesAndLinks.DIPS,        exerciseLengths.LONG,   15,   30),
+                           new ExerciseCycle(exerNamesAndLinks.ARM_HAULERS, exerciseLengths.SHORT,  null, null),
+                           new ExerciseCycle(exerNamesAndLinks.BEAR_CRAWLS, exerciseLengths.MEDIUM, null, null),
+                           new ExerciseCycle(exerNamesAndLinks.CRAB_WALKS,  exerciseLengths.MEDIUM, null, null)];
 
-    const lowerWorkouts = [new ExerciseCycle(exerNames.LUNGES,        exerciseLengths.LONG,   null, null),
-                           new ExerciseCycle(exerNames.SQUATS,        exerciseLengths.LONG,   null, null),
-                           new ExerciseCycle(exerNames.WALL_SIT,      exerciseLengths.MEDIUM, null, null),
-                           new ExerciseCycle(exerNames.JUMPING_JACKS, exerciseLengths.MEDIUM, null, null)];
+    const lowerWorkouts = [new ExerciseCycle(exerNamesAndLinks.LUNGES,        exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNamesAndLinks.SQUATS,        exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNamesAndLinks.WALL_SIT,      exerciseLengths.MEDIUM, null, null),
+                           new ExerciseCycle(exerNamesAndLinks.JUMPING_JACKS, exerciseLengths.MEDIUM, null, null)];
 
-    const coreWorkouts =  [new ExerciseCycle(exerNames.SITUPS,            exerciseLengths.LONG,   null, null),
-                           new ExerciseCycle(exerNames.LEG_LIFTS,         exerciseLengths.LONG,   null, null),
-                           new ExerciseCycle(exerNames.PLANK,             exerciseLengths.MEDIUM, null, null),
-                           new ExerciseCycle(exerNames.MOUNTAIN_CLIMBERS, exerciseLengths.MEDIUM, null, null)];
+    const coreWorkouts =  [new ExerciseCycle(exerNamesAndLinks.SITUPS,            exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNamesAndLinks.LEG_LIFTS,         exerciseLengths.LONG,   null, null),
+                           new ExerciseCycle(exerNamesAndLinks.PLANK,             exerciseLengths.MEDIUM, null, null),
+                           new ExerciseCycle(exerNamesAndLinks.MOUNTAIN_CLIMBERS, exerciseLengths.MEDIUM, null, null)];
 
     class Activity {
-        constructor(name, amountTime, numReps, numSecToDoReps) {
-            this.name = name;
-            this.amountTime = amountTime;
-            this.numReps = numReps;
-            this.numSecToDoReps = numSecToDoReps;
-            this.isForTime = (numReps == null || numSecToDoReps == null);
-            this.description = "";
+        constructor(nameAndLink, amountTime, numReps, numSecToDoReps) {
+          this.name = nameAndLink.name;
+          this.amountTime = amountTime;
+          this.numReps = numReps;
+          this.numSecToDoReps = numSecToDoReps;
+          this.isForTime = (numReps == null || numSecToDoReps == null);
+          this.description = "";
+          this.videoURL = nameAndLink.videoURL;
         }
         secondsIntToString(amountTime) {
           var timeAsString = "";
@@ -118,11 +138,11 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
           return timeAsString;
         }
         giveDescription() {
-          if(this.name === rest) {
+          if(this.name === exerNamesAndLinks.REST.name) {
             this.description = "Take a rest!";
             return;
           }
-          else if(this.name == meditate) {
+          else if(this.name === exerNamesAndLinks.MEDITATE.name) {
             this.description = "You didn't specify anything you want to exercise!";
             return;
           }
@@ -144,7 +164,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     }
 
     function getRest(length) {
-      restActivity = new Activity(rest, length, null, null);
+      restActivity = new Activity(exerNamesAndLinks.REST, length, null, null);
       restActivity.giveDescription();
       return restActivity;
     }
@@ -170,7 +190,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
           var restLengthUnlimited = timeToDoThisExercise / (1 + workRestRatio);
           var restLength = restLengthUnlimited > restUpperLimit ? restUpperLimit : restLengthUnlimited;
           var workLength = timeToDoThisExercise - restLength;
-          var newActivity = new Activity(exerciseCycleUsed.name, workLength, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
+          var newActivity = new Activity(exerciseCycleUsed.nameAndLink, workLength, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
 
           //previous exercise is exact same. merge these two.
           if(activities.length >= 1 && activities[activities.length - 1].equals(newActivity)) {
@@ -187,7 +207,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
       }
       //otherwise, the rest is built in to the workout
       else {
-          var newActivity = new Activity(exerciseCycleUsed.name, timeToDoThisExercise, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
+          var newActivity = new Activity(exerciseCycleUsed.nameAndLink, timeToDoThisExercise, exerciseCycleUsed.numReps, exerciseCycleUsed.numSecToDoReps);
 
           //previous exercise is exact same. merge these two.
           if(activities.length >= 1 && activities[activities.length - 1].equals(newActivity)) {
@@ -218,7 +238,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
                 numReps = null;
                 numSecToDoReps = null;
               }
-              const cycleWithReducedTime = new ExerciseCycle(exerciseCycleUsed.name,
+              const cycleWithReducedTime = new ExerciseCycle(exerciseCycleUsed.nameAndLink,
                                                              timeToDoThisExercise,
                                                              numReps,
                                                              numSecToDoReps);
@@ -235,7 +255,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //---------MAIN CODE OF GENERATE WORKOUT-------------
     var activities = [];
     if(!hasLower && !hasUpper && !hasCore) {
-        var activity = new Activity(meditate, workoutLength, null, null);
+        var activity = new Activity(exerNamesAndLinks.MEDITATE, workoutLength, null, null);
         activity.giveDescription();
         activities.push(exercise);
         return activities;
