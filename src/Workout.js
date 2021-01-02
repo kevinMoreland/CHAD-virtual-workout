@@ -81,7 +81,7 @@ function Workout(props) {
     //for how do I do this: on click, pause workout and open in an alert box a video demonstration
     return (
       <div className="centerWrapper">
-        <h1 style={{fontSize: "300%"}}>{currentExerciseName}</h1>
+        <h1 style={{fontSize: "600%"}}>{currentExerciseName}</h1>
         <h1 style={{fontSize: "200%"}}>{currentExerciseDescription}</h1>
         <Button color="primary" onClick={()=>handleOpenBox(boxName.VIDEO_BOX)} padding={100} margin={0}>
           How do I do this exercise?

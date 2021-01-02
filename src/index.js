@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import screenNames from './variables/ScreenNames'
 import exerciseGroups from './variables/ExerciseGroups'
 import activityObjectElements from './variables/ActivityArray'
@@ -13,6 +14,15 @@ import SetRest from './SetRest';
 import Workout from './Workout';
 import './mainStyle.css';
 import './index.css';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#FF6161',
+      contrastText: "#fff"
+    },
+  }
+});
 
 class SiteWrapper extends React.Component{
   constructor(props) {
@@ -44,6 +54,13 @@ class SiteWrapper extends React.Component{
       }
       else if(this.state.backGroundBehavior === backgroundColorBehavior.SATURATION_PULSE) {
         this.setState({
+          backgroundSat: this.state.backgroundSat === backgroundColorBehavior.HIGHER_SATURATION ?
+            backgroundColorBehavior.LOWER_SATURATION : backgroundColorBehavior.HIGHER_SATURATION
+        })
+      }
+      else if(this.state.backGroundBehavior === backgroundColorBehavior.SATURATION_PULSE_WITH_WORKOUT) {
+        this.setState({
+          backgroundHue: (this.state.currentIndexInWorkout * 40) % 360,
           backgroundSat: this.state.backgroundSat === backgroundColorBehavior.HIGHER_SATURATION ?
             backgroundColorBehavior.LOWER_SATURATION : backgroundColorBehavior.HIGHER_SATURATION
         })
@@ -115,7 +132,7 @@ class SiteWrapper extends React.Component{
   changeScreenTo(i) {
     //update background transitions
     this.setState({
-          backGroundBehavior: i === screenNames.WORKOUT ? backgroundColorBehavior.SATURATION_PULSE : backgroundColorBehavior.RAINBOW
+          backGroundBehavior: i === screenNames.WORKOUT ? backgroundColorBehavior.SATURATION_PULSE_WITH_WORKOUT : backgroundColorBehavior.RAINBOW
     });
 
     //generate workout before accessing that screen
@@ -198,7 +215,9 @@ class SiteWrapper extends React.Component{
 
 ReactDOM.render(
   <React.StrictMode>
-    <SiteWrapper />
+    <MuiThemeProvider theme={theme}>
+      <SiteWrapper />
+    </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
