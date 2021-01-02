@@ -8,6 +8,7 @@ import activityObjectElements from './variables/ActivityArray'
 import backgroundColorBehavior from './variables/BackgroundColorBehavior'
 import reportWebVitals from './reportWebVitals';
 import Welcome from './Welcome';
+import WorkoutComplete from './WorkoutComplete';
 import SetTime from './SetTime';
 import SetWorkout from './SetWorkout';
 import SetRest from './SetRest';
@@ -90,7 +91,7 @@ class SiteWrapper extends React.Component{
     this.setState({
       workoutPaused: false
     });
-
+    var oneSecondInMilli = 10;
     this.interval = setInterval(() => {
       this.setState({
         timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1,
@@ -105,9 +106,11 @@ class SiteWrapper extends React.Component{
           currentIndexInWorkout: this.state.currentIndexInWorkout + 1
         });
       }
-    }, 1000);
+    }, oneSecondInMilli);
 
-    setTimeout(() => { clearInterval(this.interval); alert("workout Finished! transition to finish screen, which has button to go to entry screen, and clears all data"); }, this.state.workoutLength * 60 * 1000);
+    setTimeout(() => { clearInterval(this.interval);
+                       this.resetWorkoutData();
+                       this.changeScreenTo(screenNames.WORKOUT_COMPLETE); }, this.state.workoutLength * 60 * oneSecondInMilli);
   }
   setExerciseGroups(i) {
     if(this.state.selectedExerciseGroups.includes(i)) {
@@ -129,13 +132,16 @@ class SiteWrapper extends React.Component{
     });
   }
 
-  changeScreenTo(i) {
-    //update background transitions
+  updateBackgroundTransitions(i) {
+    const rainbowScreens = [screenNames.WORKOUT, screenNames.WORKOUT_COMPLETE];
     this.setState({
-          backGroundBehavior: i === screenNames.WORKOUT ? backgroundColorBehavior.SATURATION_PULSE_WITH_WORKOUT : backgroundColorBehavior.RAINBOW
+          backGroundBehavior: !rainbowScreens.includes(i) ? backgroundColorBehavior.SATURATION_PULSE_WITH_WORKOUT : backgroundColorBehavior.RAINBOW
     });
+  }
+  changeScreenTo(i) {
+    this.updateBackgroundTransitions(i);
 
-    //generate workout before accessing that screen
+    //generate workout before accessing workout screen
     if(i === screenNames.WORKOUT) {
       this.getWorkout();
     }
@@ -178,25 +184,25 @@ class SiteWrapper extends React.Component{
   render() {
     let pageHTML = (<h1>Page Not Found</h1>);
     if(this.state.screen === screenNames.WELCOME) {
-      pageHTML = (<Welcome onClickNewScreen={(i, b) => this.changeScreenTo(i)}/>);
+      pageHTML = (<Welcome onClickNewScreen={(i) => this.changeScreenTo(i)}/>);
     }
     else if(this.state.screen === screenNames.SET_TIME) {
       pageHTML = (<SetTime workoutLength={this.state.workoutLength}
-                       onClickNewScreen={(i, b) => this.changeScreenTo(i)}
+                       onClickNewScreen={(i) => this.changeScreenTo(i)}
                        onClickTimer={(i) => this.addMinutesToWorkout(i)}/>);
     }
     else if(this.state.screen === screenNames.SET_WORKOUT) {
-      pageHTML = (<SetWorkout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
+      pageHTML = (<SetWorkout onClickNewScreen={(i) => this.changeScreenTo(i)}
                           onClickSetWorkoutType={(i) => this.setExerciseGroups(i)}
                           selectedExerciseGroups={this.state.selectedExerciseGroups}/>);
     }
     else if(this.state.screen === screenNames.SET_REST) {
-      pageHTML = (<SetRest onClickNewScreen={(i, b) => this.changeScreenTo(i)}
+      pageHTML = (<SetRest onClickNewScreen={(i) => this.changeScreenTo(i)}
                        onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}
                        workRestRatio={this.state.workRestRatio}/>);
     }
     else if(this.state.screen === screenNames.WORKOUT) {
-      pageHTML = (<Workout onClickNewScreen={(i, b) => this.changeScreenTo(i)}
+      pageHTML = (<Workout onClickNewScreen={(i) => this.changeScreenTo(i)}
                        activities={this.state.activities}
                        currentIndexInWorkout={this.state.currentIndexInWorkout}
                        timeInSecIntoCurrExercise={this.state.timeInSecIntoCurrExercise}
@@ -205,6 +211,9 @@ class SiteWrapper extends React.Component{
                        onClickResume={()=>this.resumeWorkout()}
                        onClickResetWorkoutData={()=>this.resetWorkoutData()}
                        timeLeftInWorkoutTotal={this.state.timeLeftInWorkoutTotal}/>);
+    }
+    else if(this.state.screen === screenNames.WORKOUT_COMPLETE) {
+     pageHTML = (<WorkoutComplete onClickNewScreen={(i) => this.changeScreenTo(i)} />);
     }
 
     var hslValue = "hsl(" + this.state.backgroundHue + ", " + this.state.backgroundSat + "%, 75%)";

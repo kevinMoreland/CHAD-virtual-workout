@@ -275,14 +275,16 @@ exports.handler = async (event) => {
     var hasUpper = event.queryStringParameters.hasUpper == "true" ? true : false;
     var hasLower = event.queryStringParameters.hasLower == "true" ? true : false;
     var hasCore =  event.queryStringParameters.hasCore  == "true" ? true : false;
-    //more rest = 1, medium rest = 3, less rest = 5.
+    // more rest = 1, medium rest = 3, less rest = 5.
     var workRestRatio = parseInt(event.queryStringParameters.workRestRatio);
 
     const response = {
         statusCode: 200,
      headers: {
          "Access-Control-Allow-Origin": "*",
-         "Access-Control-Allow-Headers": "*"
+         "Access-Control-Allow-Headers": "*",
+         'Content-Type': 'application/json',
+         "Access-Control-Allow-Methods": "GET"
      }, 
         body: JSON.stringify(generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRatio)),
     };
