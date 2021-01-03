@@ -24,25 +24,34 @@ const theme = createMuiTheme({
     },
   }
 });
+const oneSecondInMilli = 100;
 
 class SiteWrapper extends React.Component{
+
   constructor(props) {
     super(props)
-    this.color = 0;
     this.state = {
       screen: screenNames.WELCOME,
       workoutLength: 45,
       selectedExerciseGroups: [],
       workRestRatio: 3,
       activities: [],
-      workoutPaused: true,
       currentIndexInWorkout: 0,
       timeInSecIntoCurrExercise: 0,
       timeLeftInWorkoutTotal: 45 * 60,
       backgroundHue: 198,
       backgroundSat: backgroundColorBehavior.MID_SATURATION,
-      backGroundBehavior: backgroundColorBehavior.RAINBOW
+      backGroundBehavior: backgroundColorBehavior.RAINBOW,
+      workoutStartTime: 0,
+      workoutEndTime: 0,
+      workoutPauseStartTime: 0,
+      workoutPaused: true
     }
+    this.pauseWorkout=this.pauseWorkout.bind(this);
+    this.resetWorkoutData=this.resetWorkoutData.bind(this);
+    this.updateWorkoutTimer=this.updateWorkoutTimer.bind(this);
+    this.resumeWorkout=this.resumeWorkout.bind(this);
+    this.changeScreenTo=this.changeScreenTo.bind(this);
   }
 
   componentDidMount() {
@@ -75,41 +84,72 @@ class SiteWrapper extends React.Component{
       selectedExerciseGroups: [],
       workRestRatio: 3,
       activities: [],
-      workoutPaused: true,
       currentIndexInWorkout: 0,
       timeInSecIntoCurrExercise: 0,
-      timeLeftInWorkoutTotal: 45 * 60
+      timeLeftInWorkoutTotal: 45 * 60,
+      workoutStartTime: 0,
+      workoutEndTime: 0,
+      workoutPauseStartTime: 0,
+      workoutPaused: true,
     });
   }
   pauseWorkout() {
+    var currentTime = ( new Date() ).getTime();
     this.setState({
-      workoutPaused: true
-    });
-    clearInterval(this.interval);
+      workoutPaused: true,
+      workoutPauseStartTime: currentTime})
   }
-  resumeWorkout() {
-    this.setState({
-      workoutPaused: false
-    });
-    var oneSecondInMilli = 1000;
-    this.interval = setInterval(() => {
+  updateWorkoutTimer() {
+    var currentTime = ( new Date() ).getTime();
+    console.log("current time: " + currentTime + ", endtime: " + this.state.workoutEndTime);
+    if(this.state.timeLeftInWorkoutTotal > 0) {
+      setTimeout(this.updateWorkoutTimer, oneSecondInMilli);
+    }
+    if(!this.state.workoutPaused) {
+      //increment time passed in the exercise
       this.setState({
         timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1,
         timeLeftInWorkoutTotal: this.state.timeLeftInWorkoutTotal - 1});
-      if(this.state.currentIndexInWorkout < this.state.activities.length &&
-         this.state.timeInSecIntoCurrExercise === this.state.activities[this.state.currentIndexInWorkout][2]) {
 
+      //if no more exercises, workout complete
+      if(this.state.currentIndexInWorkout >= this.state.activities.length) {
+        this.resetWorkoutData();
+        this.changeScreenTo(screenNames.WORKOUT_COMPLETE);
+        return;
+      }
+
+      //if time has exceeded this exercise, move to next exercise
+      var currentExercise = this.state.activities[this.state.currentIndexInWorkout];
+      if(this.state.timeInSecIntoCurrExercise === currentExercise[activityObjectElements.TIME_IN_SEC]) {
         this.setState({
           timeInSecIntoCurrExercise: 0,
           currentIndexInWorkout: this.state.currentIndexInWorkout + 1
         });
-        document.getElementById("audio-doubleBeep").play();
-      }
-    }, oneSecondInMilli);
 
-    setTimeout(() => { clearInterval(this.interval);
-                       this.resetWorkoutData();
-                       this.changeScreenTo(screenNames.WORKOUT_COMPLETE); }, this.state.workoutLength * 60 * oneSecondInMilli);
+        //conditional prevents this from playing at end of last exercise
+        if(this.state.currentIndexInWorkout < this.state.activities.length) {
+          document.getElementById("audio-doubleBeep").play();
+        }
+      }
+    }
+  }
+  resumeWorkout() {
+    var startingWorkout = (this.state.currentIndexInWorkout == 0 && this.state.timeInSecIntoCurrExercise == 0);
+    var currentTime = ( new Date() ).getTime();
+    if(startingWorkout) {
+      console.log("starting workout");
+      this.setState({
+        workoutStartTime: currentTime,
+        workoutEndTime: currentTime + this.state.workoutLength * 60 * oneSecondInMilli,
+        workoutPaused: false
+      }, () => (this.updateWorkoutTimer()));
+    }
+    else {
+      this.setState({
+        workoutPaused: false,
+        workoutEndTime: this.state.workoutEndTime + (currentTime - this.state.workoutPauseStartTime)
+      });
+    }
   }
   setExerciseGroups(i) {
     if(this.state.selectedExerciseGroups.includes(i)) {
