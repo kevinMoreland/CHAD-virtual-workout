@@ -92,6 +92,7 @@ class SiteWrapper extends React.Component{
       workoutPauseStartTime: 0,
       workoutPaused: true,
     });
+    clearTimeout(this.timeout);
   }
   pauseWorkout() {
     var currentTime = ( new Date() ).getTime();
@@ -102,7 +103,7 @@ class SiteWrapper extends React.Component{
   updateWorkoutTimer() {
     var currentTime = ( new Date() ).getTime();
     if(this.state.timeLeftInWorkoutTotal > 0) {
-      setTimeout(this.updateWorkoutTimer, oneSecondInMilli);
+      this.timeout = setTimeout(this.updateWorkoutTimer, oneSecondInMilli);
     }
     if(!this.state.workoutPaused) {
       //increment time passed in the exercise
