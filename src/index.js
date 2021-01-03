@@ -24,7 +24,7 @@ const theme = createMuiTheme({
     },
   }
 });
-const oneSecondInMilli = 100;
+const oneSecondInMilli = 1000;
 
 class SiteWrapper extends React.Component{
 
@@ -101,7 +101,6 @@ class SiteWrapper extends React.Component{
   }
   updateWorkoutTimer() {
     var currentTime = ( new Date() ).getTime();
-    console.log("current time: " + currentTime + ", endtime: " + this.state.workoutEndTime);
     if(this.state.timeLeftInWorkoutTotal > 0) {
       setTimeout(this.updateWorkoutTimer, oneSecondInMilli);
     }
@@ -137,7 +136,6 @@ class SiteWrapper extends React.Component{
     var startingWorkout = (this.state.currentIndexInWorkout == 0 && this.state.timeInSecIntoCurrExercise == 0);
     var currentTime = ( new Date() ).getTime();
     if(startingWorkout) {
-      console.log("starting workout");
       this.setState({
         workoutStartTime: currentTime,
         workoutEndTime: currentTime + this.state.workoutLength * 60 * oneSecondInMilli,
