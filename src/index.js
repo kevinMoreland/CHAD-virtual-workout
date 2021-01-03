@@ -44,10 +44,7 @@ class SiteWrapper extends React.Component{
       backGroundBehavior: backgroundColorBehavior.RAINBOW
     }
   }
-//  playAudio(soundName) {
-//    const audioEl = document.getElementsByClassName("audio-"+soundName)[0]
-//    audioEl.play()
-//  }
+
   componentDidMount() {
     setInterval(() => {
       if(this.state.backGroundBehavior === backgroundColorBehavior.RAINBOW) {
@@ -64,7 +61,7 @@ class SiteWrapper extends React.Component{
       }
       else if(this.state.backGroundBehavior === backgroundColorBehavior.SATURATION_PULSE_WITH_WORKOUT) {
         this.setState({
-          backgroundHue: (this.state.currentIndexInWorkout * 40) % 360,
+          backgroundHue: (this.state.currentIndexInWorkout * 70) % 360,
           backgroundSat: this.state.backgroundSat === backgroundColorBehavior.HIGHER_SATURATION ?
             backgroundColorBehavior.LOWER_SATURATION : backgroundColorBehavior.HIGHER_SATURATION
         })
@@ -94,22 +91,19 @@ class SiteWrapper extends React.Component{
     this.setState({
       workoutPaused: false
     });
-    var oneSecondInMilli = 300;
+    var oneSecondInMilli = 1000;
     this.interval = setInterval(() => {
       this.setState({
         timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1,
         timeLeftInWorkoutTotal: this.state.timeLeftInWorkoutTotal - 1});
       if(this.state.currentIndexInWorkout < this.state.activities.length &&
          this.state.timeInSecIntoCurrExercise === this.state.activities[this.state.currentIndexInWorkout][2]) {
-        console.log("exercise: " + this.state.activities[this.state.currentIndexInWorkout]);
-        console.log("exercise time: " + this.state.activities[this.state.currentIndexInWorkout][2]);
-        console.log("current index: " +  this.state.currentIndexInWorkout + " out of " + this.state.activities.length);
+
         this.setState({
           timeInSecIntoCurrExercise: 0,
           currentIndexInWorkout: this.state.currentIndexInWorkout + 1
         });
-        const audioEl = document.getElementById("audio-doubleBeep");
-        audioEl.play();
+        document.getElementById("audio-doubleBeep").play();
       }
     }, oneSecondInMilli);
 
@@ -150,6 +144,9 @@ class SiteWrapper extends React.Component{
     if(i === screenNames.WORKOUT) {
       this.getWorkout();
     }
+    else if(i === screenNames.WORKOUT_COMPLETE) {
+      document.getElementById("audio-success").play();
+    }
 
     //change screen
     this.setState({
@@ -182,7 +179,6 @@ class SiteWrapper extends React.Component{
        mappedTo[activityObjectElements.NUM_SEC_TO_DO_REPS] = activity.numSecToDoReps;
        mappedTo[activityObjectElements.VIDEO_URL] = activity.videoURL;
        return mappedTo;});
-    console.log(activitiesArray);
     this.setState({
       activities: activitiesArray
     });
@@ -216,17 +212,16 @@ class SiteWrapper extends React.Component{
                        onClickPause={()=>this.pauseWorkout()}
                        onClickResume={()=>this.resumeWorkout()}
                        onClickResetWorkoutData={()=>this.resetWorkoutData()}
-                       timeLeftInWorkoutTotal={this.state.timeLeftInWorkoutTotal}/>);
+                       timeLeftInWorkoutTotal={this.state.timeLeftInWorkoutTotal}
+                       />);
     }
     else if(this.state.screen === screenNames.WORKOUT_COMPLETE) {
-     pageHTML = (<WorkoutComplete onClickNewScreen={(i) => this.changeScreenTo(i)} />);
+     pageHTML = (<WorkoutComplete onClickNewScreen={(i) => this.changeScreenTo(i)}
+                                  />);
     }
 
     var hslValue = "hsl(" + this.state.backgroundHue + ", " + this.state.backgroundSat + "%, 75%)";
-    return <div className="backgroundPulse" style={{backgroundColor: hslValue}}>
-    {pageHTML}
-
-    </div>
+    return <div className="backgroundPulse" style={{backgroundColor: hslValue}}>{pageHTML}</div>
   }
 
 }

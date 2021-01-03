@@ -26,7 +26,8 @@ function Toast(props) {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={props.open} anchorOrigin={{vertical: props.verticalPos, horizontal: props.horizontalPos}}>
+      <Snackbar open={props.open}
+                anchorOrigin={{vertical: props.verticalPos, horizontal: props.horizontalPos}}>
         <Alert severity={props.type}>
           <h2 style={{marginRight:24, marginLeft:20}}>{props.message}</h2>
         </Alert>

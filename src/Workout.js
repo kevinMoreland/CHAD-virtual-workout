@@ -8,8 +8,6 @@ import './mainStyle.css';
 import ConfirmBox from './SubComponents/ConfirmBox'
 import Toast from './SubComponents/Toast'
 import AlertBoxWithVideo from './SubComponents/AlertBoxWithVideo'
-//import useSound from 'use-sound';
-//import doubleBeep from './sounds/doubleBeep.mp3';
 
 function Workout(props) {
   //------------------------
@@ -77,10 +75,8 @@ function Workout(props) {
     let openUpNextToast = (timeRemaining > 1 && timeRemaining < 10 && nextExerciseName != null);
     let openRepReminderToast = (numSecToDoReps != null &&
       (props.timeInSecIntoCurrExercise % numSecToDoReps > 0 && props.timeInSecIntoCurrExercise % numSecToDoReps <= 4));
-    var interval = null;
-    //do something if (props.timeInSecIntoCurrExercise) % 30 == 0  || props.timeInSecIntoCurrExercise - 1 & 30 == 0 so display changes for 2 seconds to alert user
 
-    //for how do I do this: on click, pause workout and open in an alert box a video demonstration
+
     return (
       <div className="centerWrapper">
         <h1 style={{fontSize: "600%"}}>{currentExerciseName}</h1>
