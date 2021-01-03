@@ -255,9 +255,9 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //---------MAIN CODE OF GENERATE WORKOUT-------------
     var activities = [];
     if(!hasLower && !hasUpper && !hasCore) {
-        var activity = new Activity(exerNamesAndLinks.MEDITATE, workoutLength, null, null);
+        var activity = new Activity(exerNamesAndLinks.MEDITATE, workoutLengthInSec, null, null);
         activity.giveDescription();
-        activities.push(exercise);
+        activities.push(activity);
         return activities;
     }
 

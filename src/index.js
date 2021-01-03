@@ -133,9 +133,9 @@ class SiteWrapper extends React.Component{
   }
 
   updateBackgroundTransitions(i) {
-    const rainbowScreens = [screenNames.WORKOUT, screenNames.WORKOUT_COMPLETE];
+    const pulseScreens = [screenNames.WORKOUT];
     this.setState({
-          backGroundBehavior: !rainbowScreens.includes(i) ? backgroundColorBehavior.SATURATION_PULSE_WITH_WORKOUT : backgroundColorBehavior.RAINBOW
+          backGroundBehavior: pulseScreens.includes(i) ? backgroundColorBehavior.SATURATION_PULSE_WITH_WORKOUT : backgroundColorBehavior.RAINBOW
     });
   }
   changeScreenTo(i) {
@@ -175,7 +175,7 @@ class SiteWrapper extends React.Component{
        mappedTo[activityObjectElements.TIME_IN_SEC] = parseInt(activity.amountTime);
        mappedTo[activityObjectElements.NUM_REPS] = activity.numReps;
        mappedTo[activityObjectElements.NUM_SEC_TO_DO_REPS] = activity.numSecToDoReps;
-       mappedTo[activityObjectElements.VIDEO_LINK] = activity.videoLink;
+       mappedTo[activityObjectElements.VIDEO_URL] = activity.videoURL;
        return mappedTo;});
     console.log(activitiesArray);
     this.setState({

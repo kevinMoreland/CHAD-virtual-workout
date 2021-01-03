@@ -64,7 +64,7 @@ function Workout(props) {
   else{
     let activities = props.activities;
     let currentActivity = activities[props.currentIndexInWorkout];
-    let currentActivityVideoLink = currentActivity[activityObjectElements.VIDEO_LINK];
+    let currentActivityVideoLink = currentActivity[activityObjectElements.VIDEO_URL];
     let currentExerciseName = currentActivity[activityObjectElements.NAME];
     let nextExerciseName = props.currentIndexInWorkout + 1 < activities.length ? activities[props.currentIndexInWorkout + 1][activityObjectElements.NAME] : null;
     let currentExerciseDescription = currentActivity[activityObjectElements.DESC];
@@ -84,11 +84,9 @@ function Workout(props) {
       <div className="centerWrapper">
         <h1 style={{fontSize: "600%"}}>{currentExerciseName}</h1>
         <h1 style={{fontSize: "200%"}}>{currentExerciseDescription}</h1>
-        {if(currentActivityVideoLink != null) {
-          <Button color="primary" onClick={()=>handleOpenBox(boxName.VIDEO_BOX)} padding={100} margin={0}>
-            How do I do this exercise?
-          </Button>
-        }}
+        <Button display={currentActivityVideoLink == null ? "none" : "inline"} color="primary" onClick={()=>handleOpenBox(boxName.VIDEO_BOX)} padding={100} margin={0}>
+          How do I do this exercise?
+        </Button>
 
         <h1 style={{fontSize: "400%", fontFamily: "monospace"}}>{secondsToTimer(timeRemaining)}</h1>
         <h3 style={{fontSize: "200%", fontFamily: "monospace"}}>{secondsToTimer(props.timeLeftInWorkoutTotal)}</h3>
