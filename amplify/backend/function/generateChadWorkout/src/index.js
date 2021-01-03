@@ -164,7 +164,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     }
 
     function getRest(length) {
-      restActivity = new Activity(exerNamesAndLinks.REST, length, null, null);
+      var restActivity = new Activity(exerNamesAndLinks.REST, length, null, null);
       restActivity.giveDescription();
       return restActivity;
     }
@@ -255,7 +255,7 @@ function generateWorkout(workoutLength, hasUpper, hasLower, hasCore, workRestRat
     //---------MAIN CODE OF GENERATE WORKOUT-------------
     var activities = [];
     if(!hasLower && !hasUpper && !hasCore) {
-        var activity = new Activity(exerNamesAndLinks.MEDITATE, workoutLengthInSec, null, null);
+        var activity = new Activity(exerNamesAndLinks.MEDITATE, workoutLength * 60, null, null);
         activity.giveDescription();
         activities.push(activity);
         return activities;

@@ -8,9 +8,10 @@ import './mainStyle.css';
 import ConfirmBox from './SubComponents/ConfirmBox'
 import Toast from './SubComponents/Toast'
 import AlertBoxWithVideo from './SubComponents/AlertBoxWithVideo'
+//import useSound from 'use-sound';
+//import doubleBeep from './sounds/doubleBeep.mp3';
 
 function Workout(props) {
-
   //------------------------
   //For the pop-up boxes
   const boxName = {EXIT_BOX: 'exitBox', VIDEO_BOX: 'videoBox'};
@@ -132,6 +133,7 @@ function Workout(props) {
                         horizontalPos="center"
                         verticalPos="top"
                         type="error"/>
+
 
       </div>
     );

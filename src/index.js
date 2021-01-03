@@ -44,7 +44,10 @@ class SiteWrapper extends React.Component{
       backGroundBehavior: backgroundColorBehavior.RAINBOW
     }
   }
-
+//  playAudio(soundName) {
+//    const audioEl = document.getElementsByClassName("audio-"+soundName)[0]
+//    audioEl.play()
+//  }
   componentDidMount() {
     setInterval(() => {
       if(this.state.backGroundBehavior === backgroundColorBehavior.RAINBOW) {
@@ -91,7 +94,7 @@ class SiteWrapper extends React.Component{
     this.setState({
       workoutPaused: false
     });
-    var oneSecondInMilli = 10;
+    var oneSecondInMilli = 300;
     this.interval = setInterval(() => {
       this.setState({
         timeInSecIntoCurrExercise: this.state.timeInSecIntoCurrExercise + 1,
@@ -105,6 +108,8 @@ class SiteWrapper extends React.Component{
           timeInSecIntoCurrExercise: 0,
           currentIndexInWorkout: this.state.currentIndexInWorkout + 1
         });
+        const audioEl = document.getElementById("audio-doubleBeep");
+        audioEl.play();
       }
     }, oneSecondInMilli);
 
@@ -218,7 +223,10 @@ class SiteWrapper extends React.Component{
     }
 
     var hslValue = "hsl(" + this.state.backgroundHue + ", " + this.state.backgroundSat + "%, 75%)";
-    return <div className="backgroundPulse" style={{backgroundColor: hslValue}}>{pageHTML}</div>
+    return <div className="backgroundPulse" style={{backgroundColor: hslValue}}>
+    {pageHTML}
+
+    </div>
   }
 
 }
