@@ -9,7 +9,7 @@ function Welcome(props) {
 
   return (
     <div className="centerWrapper">
-        <h1 style={{fontSize: "400%"}}>Welcome to CHAD.</h1>
+        <h1 className="largeHeader">Welcome to CHAD.</h1>
         <Button color="primary"
                 variant="contained"
                 onClick={() => props.onClickNewScreen(screenNames.SET_TIME)}>Begin Workout</Button>

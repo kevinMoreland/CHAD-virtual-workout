@@ -5,6 +5,8 @@
   align-items: center;
   justify-content: center;
   align-text: center;
+  padding: 10px;
+  text-align: center;
 }
 
 .centerRow {
@@ -19,4 +21,17 @@
   -moz-transition: background-color 2s ease-out;
   -o-transition: background-color 2s ease-out;
   transition: background-color 2s ease-out;
+}
+
+.largeHeader {
+  font-size: 4em;
+}
+.mlHeader {
+  font-size: 3em;
+}
+.mediumHeader {
+  font-size: 2em;
+}
+.smallHeader {
+  font-size: 1.5em;
 }

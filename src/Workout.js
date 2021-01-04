@@ -79,8 +79,8 @@ function Workout(props) {
 
     return (
       <div className="centerWrapper">
-        <h1 style={{fontSize: "600%"}}>{currentExerciseName}</h1>
-        <h1 style={{fontSize: "200%"}}>{currentExerciseDescription}</h1>
+        <h1 className="largeHeader">{currentExerciseName}</h1>
+        <h1 className="mediumHeader">{currentExerciseDescription}</h1>
         <Button style={{visibility: currentActivityVideoLink == null ? "hidden" : "visible"}}
                 color="primary"
                 onClick={()=>handleOpenBox(boxName.VIDEO_BOX)}
@@ -89,8 +89,8 @@ function Workout(props) {
           How do I do this exercise?
         </Button>
 
-        <h1 style={{fontSize: "400%", fontFamily: "monospace"}}>{secondsToTimer(timeRemaining)}</h1>
-        <h3 style={{fontSize: "200%", fontFamily: "monospace"}}>{secondsToTimer(props.timeLeftInWorkoutTotal)}</h3>
+        <h1 className="mlHeader" style={{fontSize: "400%", fontFamily: "monospace"}}>{secondsToTimer(timeRemaining)}</h1>
+        <h3 className="smallHeader" style={{fontFamily: "monospace"}}>{secondsToTimer(props.timeLeftInWorkoutTotal)}</h3>
         &nbsp;
         <div>
           <Button color="primary"
