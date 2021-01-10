@@ -5,16 +5,15 @@ let handler = require('./index.js');
 //In AWS lambda these are event, content, and callback
 //event and content are JSON object and callback is a function
 //In my example i'm using empty JSON
-handler.handler( {
+let handlePromise = handler.handler( {
       "queryStringParameters": {
         "workoutLength": "15",
         "restLevel": "0",
-        "hasUpper": "false",
+        "hasUpper": "true",
         "hasLower": "false",
         "hasCore": "false"
       }
     }, //event
     {}, //content
-    function(data,ss) {  //callback function with two arguments 
-        console.log(data);
-    });
+);
+handlePromise.then(function(result){console.log(result)});

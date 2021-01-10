@@ -1,9 +1,11 @@
 let exerciseModule = require('./Exercise.js');
 
 class Activity {
-  constructor(exercise) {
+  constructor(exercise, amountTime) {
     this.name = exercise.name;
     this.videoURL = exercise.videoURL;
+    this.amountTime = amountTime;
+    this.giveDescription();
   }
   secondsIntToString(timeInSeconds) {
     var timeAsString = "";
@@ -45,8 +47,8 @@ class Activity {
 
 }
 class ActivityNonExercise extends Activity {
-  constructor(exercise) {
-    super(exercise);
+  constructor(exercise, amountTime) {
+    super(exercise, amountTime);
     this.possibleNames = ["Rest", "Meditate"];
     if(!this.possibleNames.includes(this.name)) {
       throw new Error("The name " + this.name + " is not a possible ActivityNonExercise type");
@@ -131,3 +133,4 @@ exports.upperActivities = upperActivities;
 exports.lowerActivities = lowerActivities;
 exports.coreActivities = coreActivities;
 exports.nonExerciseActivities = nonExerciseActivities;
+exports.ActivityForTime = ActivityForTime;

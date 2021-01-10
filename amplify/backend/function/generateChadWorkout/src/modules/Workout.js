@@ -39,66 +39,79 @@ exports.generateWorkout = async function (workoutLengthInMin, hasUpper, hasLower
   return activities;
 }
 
-function generateWorkoutSection(workoutType, restLevel, workoutLengthInSec) {
+function generateWorkoutSection(exerciseType, restLevel, workoutLengthInSec) {
   let totalWorkoutTime = 0;
   let activities = [];
   let prevActivity = null;
   while(totalWorkoutTime < workoutLengthInSec) {
 
     let newActivity = null;
-    let restActivity = activityModule.nonExerciseActivities.REST.getClone();
+    let restActivity = null;
+    let timeForThisActivity = 0;
     let randomNum = Math.random();
     let restAmountInSec = 0;
-    switch(workoutType) {
-      case workoutType.UPPER:
+    switch(exerciseType) {
+      case exerciseModule.exerciseTypes.UPPER:
         restAmountInSec = restLevel === restLevels.LESS ? 10 : restLevel === restLevels.MEDIUM ? 20 : 30;
-        newActivity = activityModule.upperActivities[randomNum * activityModule.upperActivities.length].getClone();
+        newActivity = activityModule.upperActivities[Math.floor(randomNum * activityModule.upperActivities.length)].getClone();
       break;
-      case workoutType.LOWER:
+      case exerciseModule.exerciseTypes.LOWER:
         restAmountInSec = restLevel === restLevels.LESS ? 0 : restLevel === restLevels.MEDIUM ? 10 : 15;
-        newActivity = activityModule.lowerActivities[randomNum * activityModule.lowerActivities.length].getClone();
+        newActivity = activityModule.lowerActivities[Math.floor(randomNum * activityModule.lowerActivities.length)].getClone();
       break;
-      case workoutType.CORE:
+      case exerciseModule.exerciseTypes.CORE:
         restAmountInSec = restLevel === restLevels.LESS ? 5 : restLevel === restLevels.MEDIUM ? 10 : 20;
-        newActivity = activityModule.coreActivities[randomNum * activityModule.coreActivities.length].getClone();
+        newActivity = activityModule.coreActivities[Math.floor(randomNum * activityModule.coreActivities.length)].getClone();
       break;
       default:
         newActivity = activityModule.nonExerciseActivities.MEDITATE;
         newActivity.setAmountTime(workoutLengthInSec - totalWorkoutTime);
     }
-    
+
     //This added activity causes overflow, adjust its length
     if(totalWorkoutTime + newActivity.amountTime > workoutLengthInSec) {
+      console.log("setting time to " + (workoutLengthInSec - totalWorkoutTime));
       newActivity.setAmountTime(workoutLengthInSec - totalWorkoutTime);
     }
+    timeForThisActivity = newActivity.amountTime;
 
-    //Add rest
+    //Create rest activity with appropriate length
     if(restAmountInSec > 0){
+      restActivity = activityModule.nonExerciseActivities.REST.getClone();
       restActivity.setAmountTime(restAmountInSec);
+      console.log("setting rest to" + restAmountInSec)
 
       //take the rest amount time out of the activity's time
       newActivity.setAmountTime(newActivity.amountTime - restAmountInSec);
+      if(newActivity.amountTime <= 0) {
+        newActivity = null;
+      }
     }
 
     //The previous exercise is exact same (and not upper for time. This would be too difficult. Ex, pushups for 2 minutes). Merge these two.
-    if(!(workoutType == workoutType.UPPER && newActivity instanceof activityModule.ActivityForTime) &&
+    if(!(exerciseType == exerciseModule.exerciseTypes.UPPER && newActivity instanceof activityModule.ActivityForTime) &&
         prevActivity != null && 
         prevActivity.equals(newActivity)) {      
       prevActivity.setAmountTime(newActivity.amountTime + prevActivity.amountTime);
       
       // Actual last activity may be rest. If so, merge this newActivity's rest to it
-      let literalPrevActivity = activities[activities.lastIndexOf];
+      let literalPrevActivity = activities[activities.length - 1];
       if(literalPrevActivity.name === activityModule.nonExerciseActivities.REST.name) {
         literalPrevActivity.setAmountTime(literalPrevActivity.amountTime + restActivity.amountTime);
       }
     }
     else {
-      activities.push(newActivity);
-      activities.push(restActivity);
+      if(newActivity != null) {
+        activities.push(newActivity);
+      }
+      if(restActivity != null) {
+        activities.push(restActivity);
+      }
     }
     
     prevActivity = newActivity;
-    totalWorkoutTime += newActivity.amountTime;
+    console.log(totalWorkoutTime + ", goal: " + workoutLengthInSec);
+    totalWorkoutTime += timeForThisActivity;
   }
   return activities;
 }
