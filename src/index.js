@@ -34,7 +34,7 @@ class SiteWrapper extends React.Component{
       screen: screenNames.WELCOME,
       workoutLength: 45,
       selectedExerciseGroups: [],
-      workRestRatio: 3,
+      restLevel: 1,
       activities: [],
       currentIndexInWorkout: 0,
       timeInSecIntoCurrExercise: 0,
@@ -82,7 +82,7 @@ class SiteWrapper extends React.Component{
     this.setState({
       workoutLength: 45,
       selectedExerciseGroups: [],
-      workRestRatio: 3,
+      restLevel: 1,
       activities: [],
       currentIndexInWorkout: 0,
       timeInSecIntoCurrExercise: 0,
@@ -164,9 +164,9 @@ class SiteWrapper extends React.Component{
       });
     }
   }
-  setWorkRestRatio(i) {
+  setRestLevel(i) {
     this.setState({
-      workRestRatio: i,
+      restLevel: i,
     });
   }
 
@@ -205,7 +205,7 @@ class SiteWrapper extends React.Component{
                   + '&hasUpper='      + this.state.selectedExerciseGroups.includes(exerciseGroups.UPPER)
                   + '&hasLower='      + this.state.selectedExerciseGroups.includes(exerciseGroups.LOWER)
                   + '&hasCore='       + this.state.selectedExerciseGroups.includes(exerciseGroups.CORE)
-                  + '&workRestRatio=' + this.state.workRestRatio;
+                  + '&restLevel='     + this.state.restLevel;
     const url = 'https://x9txjb9yi5.execute-api.eu-west-1.amazonaws.com/staging/workout' + params;
     const response = await fetch(url);
     const data = await response.json();
@@ -239,8 +239,8 @@ class SiteWrapper extends React.Component{
     }
     else if(this.state.screen === screenNames.SET_REST) {
       pageHTML = (<SetRest onClickNewScreen={(i) => this.changeScreenTo(i)}
-                       onClickSetWorkRestRatio={(i) => this.setWorkRestRatio(i)}
-                       workRestRatio={this.state.workRestRatio}/>);
+                       onClickSetRestLevel={(i) => this.setRestLevel(i)}
+                       restLevel={this.state.restLevel}/>);
     }
     else if(this.state.screen === screenNames.WORKOUT) {
       pageHTML = (<Workout onClickNewScreen={(i) => this.changeScreenTo(i)}

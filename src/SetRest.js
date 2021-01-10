@@ -1,8 +1,6 @@
 import { Button } from '@material-ui/core';
 import './mainStyle.css';
 import screenNames from './variables/ScreenNames'
-import Paper from '@material-ui/core/Paper';
-import Fade from '@material-ui/core/Fade';
 
 function SetRest(props) {
 
@@ -10,14 +8,14 @@ function SetRest(props) {
     <div className="centerWrapper">
       <h1>How much rest do you need?</h1>
       <div className="centerRow">
-        <Button color="primary" variant={props.workRestRatio == 5 ? "contained" : "outlined"}
-                onClick={() => props.onClickSetWorkRestRatio(5)}>Less Rest</Button>
+        <Button color="primary" variant={props.restLevel == 0 ? "contained" : "outlined"}
+                onClick={() => props.onClickSetRestLevel(0)}>Less Rest</Button>
         &nbsp;
-        <Button color="primary" variant={props.workRestRatio == 3 ? "contained" : "outlined"}
-                onClick={() => props.onClickSetWorkRestRatio(3)}>Medium Rest</Button>
+        <Button color="primary" variant={props.restLevel == 1 ? "contained" : "outlined"}
+                onClick={() => props.onClickSetRestLevel(1)}>Medium Rest</Button>
         &nbsp;
-        <Button color="primary" variant={props.workRestRatio == 1 ? "contained" : "outlined"}
-                onClick={() => props.onClickSetWorkRestRatio(1)}>More Rest</Button>
+        <Button color="primary" variant={props.restLevel == 2 ? "contained" : "outlined"}
+                onClick={() => props.onClickSetRestLevel(2)}>More Rest</Button>
       </div>
       &nbsp;
       <div className="centerRow">
