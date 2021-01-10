@@ -1,4 +1,4 @@
-import generateWorkout from './Workout'
+import generateWorkout from './modules/Workout'
 
 //A workout is a list of Activities, and each Activity has an Exercise. 
 //Each Activity contains an Exercise, a length, and possibly a number of reps and seconds to do reps.
@@ -9,7 +9,6 @@ exports.handler = async (event) => {
     var hasUpper = event.queryStringParameters.hasUpper == "true" ? true : false;
     var hasLower = event.queryStringParameters.hasLower == "true" ? true : false;
     var hasCore =  event.queryStringParameters.hasCore  == "true" ? true : false;
-    // Less rest = 0, Medium rest = 1, More rest = 2
     var restLevel = parseInt(event.queryStringParameters.restLevel);
 
     const response = {

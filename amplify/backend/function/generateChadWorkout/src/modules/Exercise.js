@@ -25,6 +25,7 @@ const exercises = {PUSHUPS:           new Exercise('Pushups', "https://www.youtu
 
 //important for description of workouts. (ex, don't want to say "do as many as you can" for wall sits, doesn't make sense)
 const nonRepExercises = [exercises.ARM_HAULERS.name, exercises.WALL_SIT.name,
-                        exercises.PLANK.name,       exercises.BEAR_CRAWLS.name, exercises.CRAB_WALKS.name];
+                        exercises.PLANK.name,        exercises.BEAR_CRAWLS.name, 
+                        exercises.CRAB_WALKS.name];
 
 export {exercises, nonRepExercises, exerciseTypes};

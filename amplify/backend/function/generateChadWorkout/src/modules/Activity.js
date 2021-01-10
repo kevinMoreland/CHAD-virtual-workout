@@ -43,7 +43,7 @@ class ActivityNonExercise extends Activity {
   static possibleNames = ["Rest", "Meditate"];
   constructor(exercise) {
     super(exercise);
-    if(!possibleNames.includes(this.name)) {
+    if(!this.possibleNames.includes(this.name)) {
       throw new Error("The name " + this.name + " is not a possible ActivityNonExercise type");
     }
   }

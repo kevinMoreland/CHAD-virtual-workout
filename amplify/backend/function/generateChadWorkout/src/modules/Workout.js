@@ -151,4 +151,4 @@ function cloneObject(object) {
   return JSON.parse(JSON.stringify(object));
 }
 
-export default generateWorkout;
+module.exports = {generateWorkout};
