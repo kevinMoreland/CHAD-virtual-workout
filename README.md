@@ -8,9 +8,14 @@ CHAD then guides the user through the workout by displaying a sequence of timed 
 ## Backend
 
 CHAD makes calls to an AWS Lambda function to generate workouts. The logic is divided into 3 modules: Activity, Exercise, and Workout. 
+
 A Workout is a list of Activities. 
+
 An Activity has an Exercise and an instructional description (Ex. Do X number of reps every Y seconds, Do as many as you can in X seconds, etc.)
+
 An Exercise has a name (pushup, situp, etc.) and a URL demonstration of that Exercise.
+
+
 [See the backend code here](amplify/backend/function/generateChadWorkout/src)
 
 ## Front End
