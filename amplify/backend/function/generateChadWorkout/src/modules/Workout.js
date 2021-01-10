@@ -1,9 +1,9 @@
-import {exerciseTypes} from './Exercise.js'
-import {ActivityForTime, upperActivities, lowerActivities, coreActivities, nonExerciseActivities} from './Activity.js'
+let exerciseModule = require('./Exercise.js');
+let activityModule = require('./Activity.js');
 
 const restLevels = {LESS: 0, MEDIUM: 1, MORE: 2};
 
-function generateWorkout(workoutLengthInMin, hasUpper, hasLower, hasCore, restLevel) {
+exports.generateWorkout = async function (workoutLengthInMin, hasUpper, hasLower, hasCore, restLevel) {
   var activities = [];
   let workoutLengthInSec = workoutLengthInMin * 60;
   if(!hasLower && !hasUpper && !hasCore) {
@@ -15,26 +15,26 @@ function generateWorkout(workoutLengthInMin, hasUpper, hasLower, hasCore, restLe
   let lowerWorkoutLengthInSec = (workoutLengthInSec / 3) * ratioOfEachExerciseGroupNeeded.lower;
   let coreWorkoutLengthInSec =  (workoutLengthInSec / 3) * ratioOfEachExerciseGroupNeeded.core;
 
-  var upperActivities = generateWorkoutSection(exerciseTypes.UPPER, restLevel, upperWorkoutLengthInSec);
-  var lowerActivities = generateWorkoutSection(exerciseTypes.LOWER, restLevel, lowerWorkoutLengthInSec);
-  var coreActivities =  generateWorkoutSection(exerciseTypes.CORE,  restLevel, coreWorkoutLengthInSec);
+  let upperWorkout = generateWorkoutSection(exerciseModule.exerciseTypes.UPPER, restLevel, upperWorkoutLengthInSec);
+  let lowerWorkout = generateWorkoutSection(exerciseModule.exerciseTypes.LOWER, restLevel, lowerWorkoutLengthInSec);
+  let coreWorkout =  generateWorkoutSection(exerciseModule.exerciseTypes.CORE,  restLevel, coreWorkoutLengthInSec);
 
   //randomize order of exercise groups
   let randomNum = Math.random();
   if(randomNum < 0.3) {
-      activities = activities.concat(upperActivities);
-      activities = activities.concat(lowerActivities);
-      activities = activities.concat(coreActivities);
+      activities = activities.concat(upperWorkout);
+      activities = activities.concat(lowerWorkout);
+      activities = activities.concat(coreWorkout);
   }
   else if(randomNum < 0.6) {
-      activities = activities.concat(coreActivities);
-      activities = activities.concat(upperActivities);
-      activities = activities.concat(lowerActivities);
+      activities = activities.concat(coreWorkout);
+      activities = activities.concat(upperWorkout);
+      activities = activities.concat(lowerWorkout);
   }
   else {
-      activities = activities.concat(lowerActivities);
-      activities = activities.concat(coreActivities);
-      activities = activities.concat(upperActivities);
+      activities = activities.concat(lowerWorkout);
+      activities = activities.concat(coreWorkout);
+      activities = activities.concat(upperWorkout);
   }
   return activities;
 }
@@ -46,24 +46,24 @@ function generateWorkoutSection(workoutType, restLevel, workoutLengthInSec) {
   while(totalWorkoutTime < workoutLengthInSec) {
 
     let newActivity = null;
-    let restActivity = cloneObject(nonExerciseActivities.REST);
+    let restActivity = activityModule.nonExerciseActivities.REST.getClone();
     let randomNum = Math.random();
     let restAmountInSec = 0;
     switch(workoutType) {
       case workoutType.UPPER:
         restAmountInSec = restLevel === restLevels.LESS ? 10 : restLevel === restLevels.MEDIUM ? 20 : 30;
-        newActivity = cloneObject(upperActivities[randomNum * upperActivities.length]);
+        newActivity = activityModule.upperActivities[randomNum * activityModule.upperActivities.length].getClone();
       break;
       case workoutType.LOWER:
         restAmountInSec = restLevel === restLevels.LESS ? 0 : restLevel === restLevels.MEDIUM ? 10 : 15;
-        newActivity = cloneObject(lowerActivities[randomNum * lowerActivities.length]);
+        newActivity = activityModule.lowerActivities[randomNum * activityModule.lowerActivities.length].getClone();
       break;
       case workoutType.CORE:
         restAmountInSec = restLevel === restLevels.LESS ? 5 : restLevel === restLevels.MEDIUM ? 10 : 20;
-        newActivity = cloneObject(coreActivities[randomNum * coreActivities.length]);
+        newActivity = activityModule.coreActivities[randomNum * activityModule.coreActivities.length].getClone();
       break;
       default:
-        newActivity = cloneObject(nonExerciseActivities.MEDITATE);
+        newActivity = activityModule.nonExerciseActivities.MEDITATE;
         newActivity.setAmountTime(workoutLengthInSec - totalWorkoutTime);
     }
     
@@ -81,14 +81,14 @@ function generateWorkoutSection(workoutType, restLevel, workoutLengthInSec) {
     }
 
     //The previous exercise is exact same (and not upper for time. This would be too difficult. Ex, pushups for 2 minutes). Merge these two.
-    if(!(workoutType == workoutType.UPPER && newActivity instanceof ActivityForTime) &&
+    if(!(workoutType == workoutType.UPPER && newActivity instanceof activityModule.ActivityForTime) &&
         prevActivity != null && 
         prevActivity.equals(newActivity)) {      
       prevActivity.setAmountTime(newActivity.amountTime + prevActivity.amountTime);
       
       // Actual last activity may be rest. If so, merge this newActivity's rest to it
       let literalPrevActivity = activities[activities.lastIndexOf];
-      if(literalPrevActivity.name === nonExerciseActivities.REST.name) {
+      if(literalPrevActivity.name === activityModule.nonExerciseActivities.REST.name) {
         literalPrevActivity.setAmountTime(literalPrevActivity.amountTime + restActivity.amountTime);
       }
     }
@@ -146,9 +146,3 @@ function getRatioEachExerciseGroup(hasUpper, hasLower, hasCore) {
   }
   return outputRatio;
 }
-
-function cloneObject(object) {
-  return JSON.parse(JSON.stringify(object));
-}
-
-export default generateWorkout;

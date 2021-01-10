@@ -28,4 +28,7 @@ const nonRepExercises = [exercises.ARM_HAULERS.name, exercises.WALL_SIT.name,
                         exercises.PLANK.name,        exercises.BEAR_CRAWLS.name, 
                         exercises.CRAB_WALKS.name];
 
-export {exercises, nonRepExercises, exerciseTypes};
+exports.nonRepExercises = nonRepExercises;
+exports.exercises = exercises;
+exports.exerciseTypes = exerciseTypes;
+exports.Exercise = Exercise;
