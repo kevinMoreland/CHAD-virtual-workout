@@ -1,5 +1,5 @@
-import {exerciseTypes} from './Exercise'
-import {ActivityForTime, upperActivities, lowerActivities, coreActivities, nonExerciseActivities} from './Activity'
+import {exerciseTypes} from './Exercise.js'
+import {ActivityForTime, upperActivities, lowerActivities, coreActivities, nonExerciseActivities} from './Activity.js'
 
 const restLevels = {LESS: 0, MEDIUM: 1, MORE: 2};
 
@@ -151,4 +151,4 @@ function cloneObject(object) {
   return JSON.parse(JSON.stringify(object));
 }
 
-module.exports = {generateWorkout};
+export default generateWorkout;

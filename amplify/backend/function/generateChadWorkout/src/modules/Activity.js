@@ -1,4 +1,4 @@
-import {exercises, nonRepExercises} from './Exercise'
+import {exercises, nonRepExercises} from './Exercise.js'
 
 class Activity {
   constructor(exercise) {
@@ -40,9 +40,9 @@ class Activity {
 
 }
 class ActivityNonExercise extends Activity {
-  static possibleNames = ["Rest", "Meditate"];
   constructor(exercise) {
     super(exercise);
+    this.possibleNames = ["Rest", "Meditate"];
     if(!this.possibleNames.includes(this.name)) {
       throw new Error("The name " + this.name + " is not a possible ActivityNonExercise type");
     }

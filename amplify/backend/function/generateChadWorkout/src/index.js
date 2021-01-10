@@ -1,4 +1,5 @@
-import generateWorkout from './modules/Workout'
+import generateWorkout from './modules/Workout.js'
+//let workout = require('./modules/Workout')
 
 //A workout is a list of Activities, and each Activity has an Exercise. 
 //Each Activity contains an Exercise, a length, and possibly a number of reps and seconds to do reps.
