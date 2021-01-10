@@ -70,7 +70,6 @@ function generateWorkoutSection(exerciseType, restLevel, workoutLengthInSec) {
 
     //This added activity causes overflow, adjust its length
     if(totalWorkoutTime + newActivity.amountTime > workoutLengthInSec) {
-      console.log("setting time to " + (workoutLengthInSec - totalWorkoutTime));
       newActivity.setAmountTime(workoutLengthInSec - totalWorkoutTime);
     }
     timeForThisActivity = newActivity.amountTime;
@@ -79,7 +78,6 @@ function generateWorkoutSection(exerciseType, restLevel, workoutLengthInSec) {
     if(restAmountInSec > 0){
       restActivity = activityModule.nonExerciseActivities.REST.getClone();
       restActivity.setAmountTime(restAmountInSec);
-      console.log("setting rest to" + restAmountInSec)
 
       //take the rest amount time out of the activity's time
       newActivity.setAmountTime(newActivity.amountTime - restAmountInSec);
@@ -110,7 +108,6 @@ function generateWorkoutSection(exerciseType, restLevel, workoutLengthInSec) {
     }
     
     prevActivity = newActivity;
-    console.log(totalWorkoutTime + ", goal: " + workoutLengthInSec);
     totalWorkoutTime += timeForThisActivity;
   }
   return activities;

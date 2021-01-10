@@ -10,8 +10,8 @@ let handlePromise = handler.handler( {
         "workoutLength": "15",
         "restLevel": "0",
         "hasUpper": "true",
-        "hasLower": "false",
-        "hasCore": "false"
+        "hasLower": "true",
+        "hasCore": "true"
       }
     }, //event
     {}, //content
