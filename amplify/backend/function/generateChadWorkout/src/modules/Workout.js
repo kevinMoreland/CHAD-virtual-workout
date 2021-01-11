@@ -43,6 +43,7 @@ function generateWorkoutSection(exerciseType, restLevel, workoutLengthInSec) {
   let totalWorkoutTime = 0;
   let activities = [];
   let prevActivity = null;
+  let prevRest = null;
   while(totalWorkoutTime < workoutLengthInSec) {
 
     let newActivity = null;
@@ -89,9 +90,8 @@ function generateWorkoutSection(exerciseType, restLevel, workoutLengthInSec) {
     //The previous exercise is exact same (and not upper for time. This would be too difficult. Ex, pushups for 2 minutes). Merge these two.
     if(!(exerciseType == exerciseModule.exerciseTypes.UPPER && newActivity instanceof activityModule.ActivityForTime) &&
         prevActivity != null && 
-        prevActivity.equals(newActivity)) {      
+        prevActivity.equals(newActivity)) {
       prevActivity.setAmountTime(newActivity.amountTime + prevActivity.amountTime);
-      
       // Actual last activity may be rest. If so, merge this newActivity's rest to it
       let literalPrevActivity = activities[activities.length - 1];
       if(literalPrevActivity.name === activityModule.nonExerciseActivities.REST.name) {
@@ -105,9 +105,8 @@ function generateWorkoutSection(exerciseType, restLevel, workoutLengthInSec) {
       if(restActivity != null) {
         activities.push(restActivity);
       }
+      prevActivity = newActivity;
     }
-    
-    prevActivity = newActivity;
     totalWorkoutTime += timeForThisActivity;
   }
   return activities;

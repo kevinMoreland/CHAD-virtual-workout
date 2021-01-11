@@ -7,10 +7,10 @@ let handler = require('./index.js');
 //In my example i'm using empty JSON
 let handlePromise = handler.handler( {
       "queryStringParameters": {
-        "workoutLength": "15",
+        "workoutLength": "30",
         "restLevel": "0",
         "hasUpper": "true",
-        "hasLower": "true",
+        "hasLower": "false",
         "hasCore": "true"
       }
     }, //event
